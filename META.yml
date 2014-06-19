@@ -1,0 +1,43 @@
+---
+abstract: 'Perl Moose Roles and methods for the Genome Analysis Toolkit (i.e. GATK)'
+author:
+  - 'Richard de Borja <richard.deborja@sickkids.ca>'
+build_requires:
+  Test::More: 0
+configure_requires:
+  Module::Build: 0
+dynamic_config: 1
+generated_by: 'Module::Build version 0.4205, CPAN::Meta::Converter version 2.120921'
+license: artistic_2
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: NGS-Tools-GATK
+provides:
+  NGS::Tools::GATK:
+    file: lib/NGS/Tools/GATK.pm
+    version: 0.02
+  NGS::Tools::GATK::Role::DepthOfCoverage:
+    file: lib/NGS/Tools/GATK/Role/DepthOfCoverage.pm
+    version: 0
+  NGS::Tools::GATK::Role::IndelRealigner:
+    file: lib/NGS/Tools/GATK/Role/IndelRealigner.pm
+    version: 0
+  NGS::Tools::GATK::Role::Pileup:
+    file: lib/NGS/Tools/GATK/Role/Pileup.pm
+    version: 0
+  NGS::Tools::GATK::Role::UnifiedGenotyper:
+    file: lib/NGS/Tools/GATK/Role/UnifiedGenotyper.pm
+    version: 0
+  NGS::Tools::GATKRole::RealignerTargetCreator:
+    file: lib/NGS/Tools/GATK/Role/RealignerTargetCreator.pm
+    version: 0
+requires:
+  Carp: 0
+  File::Basename: 0
+  Moose: 0
+  Moose::Role: 0
+  MooseX::Params::Validate: 0
+resources:
+  license: http://www.perlfoundation.org/artistic_license_2_0
+version: 0.02

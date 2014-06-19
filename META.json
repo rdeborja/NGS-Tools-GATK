@@ -1,0 +1,65 @@
+{
+   "abstract" : "Perl Moose Roles and methods for the Genome Analysis Toolkit (i.e. GATK)",
+   "author" : [
+      "Richard de Borja <richard.deborja@sickkids.ca>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4205",
+   "license" : [
+      "artistic_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "NGS-Tools-GATK",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::More" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : "0",
+            "File::Basename" : "0",
+            "Moose" : "0",
+            "Moose::Role" : "0",
+            "MooseX::Params::Validate" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "NGS::Tools::GATK" : {
+         "file" : "lib/NGS/Tools/GATK.pm",
+         "version" : "0.02"
+      },
+      "NGS::Tools::GATK::Role::DepthOfCoverage" : {
+         "file" : "lib/NGS/Tools/GATK/Role/DepthOfCoverage.pm"
+      },
+      "NGS::Tools::GATK::Role::IndelRealigner" : {
+         "file" : "lib/NGS/Tools/GATK/Role/IndelRealigner.pm"
+      },
+      "NGS::Tools::GATK::Role::Pileup" : {
+         "file" : "lib/NGS/Tools/GATK/Role/Pileup.pm"
+      },
+      "NGS::Tools::GATK::Role::UnifiedGenotyper" : {
+         "file" : "lib/NGS/Tools/GATK/Role/UnifiedGenotyper.pm"
+      },
+      "NGS::Tools::GATKRole::RealignerTargetCreator" : {
+         "file" : "lib/NGS/Tools/GATK/Role/RealignerTargetCreator.pm"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://www.perlfoundation.org/artistic_license_2_0"
+      ]
+   },
+   "version" : "0.02"
+}
