@@ -4,9 +4,9 @@
       "Richard de Borja <richard.deborja@sickkids.ca>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4205",
+   "generated_by" : "Module::Build version 0.421",
    "license" : [
-      "artistic_2"
+      "unknown"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
@@ -37,29 +37,27 @@
    "provides" : {
       "NGS::Tools::GATK" : {
          "file" : "lib/NGS/Tools/GATK.pm",
-         "version" : "0.02"
+         "version" : "0.03"
       },
-      "NGS::Tools::GATK::Role::DepthOfCoverage" : {
-         "file" : "lib/NGS/Tools/GATK/Role/DepthOfCoverage.pm"
+      "NGS::Tools::GATK::Roles::BaseRecalibrator" : {
+         "file" : "lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm"
       },
-      "NGS::Tools::GATK::Role::IndelRealigner" : {
-         "file" : "lib/NGS/Tools/GATK/Role/IndelRealigner.pm"
+      "NGS::Tools::GATK::Roles::Core" : {
+         "file" : "lib/NGS/Tools/GATK/Roles/Core.pm"
       },
-      "NGS::Tools::GATK::Role::Pileup" : {
-         "file" : "lib/NGS/Tools/GATK/Role/Pileup.pm"
+      "NGS::Tools::GATK::Roles::DepthOfCoverage" : {
+         "file" : "lib/NGS/Tools/GATK/Roles/DepthOfCoverage.pm"
       },
-      "NGS::Tools::GATK::Role::UnifiedGenotyper" : {
-         "file" : "lib/NGS/Tools/GATK/Role/UnifiedGenotyper.pm"
+      "NGS::Tools::GATK::Roles::IndelRealigner" : {
+         "file" : "lib/NGS/Tools/GATK/Roles/IndelRealigner.pm"
       },
-      "NGS::Tools::GATKRole::RealignerTargetCreator" : {
-         "file" : "lib/NGS/Tools/GATK/Role/RealignerTargetCreator.pm"
+      "NGS::Tools::GATK::Roles::Pileup" : {
+         "file" : "lib/NGS/Tools/GATK/Roles/Pileup.pm"
+      },
+      "NGS::Tools::GATK::Roles::RealignerTargetCreator" : {
+         "file" : "lib/NGS/Tools/GATK/Roles/RealignerTargetCreator.pm"
       }
    },
    "release_status" : "stable",
-   "resources" : {
-      "license" : [
-         "http://www.perlfoundation.org/artistic_license_2_0"
-      ]
-   },
-   "version" : "0.02"
+   "version" : "0.03"
 }

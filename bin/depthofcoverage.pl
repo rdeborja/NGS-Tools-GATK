@@ -7,6 +7,7 @@
 # Version       Date            Developer           Comments
 # 0.01          2014-04-17      rdeborja            Initial development
 # 0.02          2014-04-17      rdeborja            added creation of SGE Bash script
+# 0.03          2015-01-27      rdeborja            replaced HPF::SGE::Roles with HPF::PBS
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -16,15 +17,16 @@ use Getopt::Long;
 use Pod::Usage;
 use NGS::Tools::GATK;
 use File::ShareDir ':ALL';
+use HPF::PBS;
 
 ### COMMAND LINE DEFAULT ARGUMENTS ################################################################
 # list of arguments and default values go here as hash key/value pairs
 our %opts = (
-	bam => undef,
-	ref => '/hpf/largeprojects/adam/ref_data/targets/SureSelect_All_Exon_50mb_with_annotation_HG19_BED.removeChrUn.interval',
-	intervals => '',
-    java => '/hpf/tools/centos/java/1.6.0/bin/java',
-    gatk => '/hpf/tools/centos/gatk/2.8.1/GenomeAnalysisTK.jar',
+    bam => undef,
+    ref => '',
+    intervals => '/hpf/largeprojects/adam/ref_data/targets/SureSelect_All_Exon_50mb_with_annotation_HG19_BED.removeChrUn.interval',
+    java => '/hpf/tools/centos6/java/1.7.0/bin/java',
+    gatk => '/hpf/tools/centos6/gatk/2.8.1/GenomeAnalysisTK.jar',
     memory => 4
     );
 
@@ -50,7 +52,6 @@ sub main {
         "man",
         "bam|b=s",
         "ref|r:s",
-        "intervals|i:s",
         "java:s",
         "picard:s",
         "memory:i"
@@ -69,29 +70,29 @@ sub main {
     my $memory = $opts{'memory'} * 2;
 
     my $template_dir = join('/',
-        dist_dir('HPF-SGE'),
+        dist_dir('HPF'),
         'templates'
         );
-    my $template = 'submit_to_sge.template';
+    my $template = 'submit_to_pbs.template';
 
     my $gatk = NGS::Tools::GATK->new();
     my $gatk_coverage_run = $gatk->generate_depth_of_coverage(
-    	bam => $opts{'bam'},
-    	ref => $opts{'ref'},
-    	intervals => $opts{'intervals'},
+        bam => $opts{'bam'},
+        ref => $opts{'ref'},
         java => $opts{'java'},
         gatk => $opts{'gatk'},
         memory => $opts{'memory'}
-    	);
+        );
 
+    my $pbs = HPF::PBS->new();
     my @hold_for = ();
-    my $gatk_script = $gatk->create_sge_shell_scripts(
+    my $gatk_script = $pbs->create_cluster_shell_script(
         command => $gatk_coverage_run->{'cmd'},
         jobname => join('_', 'gatk', 'coverage'),
         template_dir => $template_dir,
         template => $template,
         memory => $memory,
-        hold_for => \@hold_for
+        hold_for => \@hold_for        
         );
 
     return 0;

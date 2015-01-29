@@ -5,3 +5,7 @@ Revision history for NGS-Tools-GATK
 
 0.02    2014-05-21
         Added Pileup.jar functionality including a create_pileup.pl wrapper script.  General code cleanup.
+
+0.03    2015-01-29
+        Fixed role names and tests after moving directory lib/NGS/Tools/GATK/Role to
+        lib/NGS/Tools/GATK/Roles

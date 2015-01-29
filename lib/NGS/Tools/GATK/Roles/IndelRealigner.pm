@@ -1,65 +1,61 @@
-package NGS::Tools::GATK::Role::Pileup;
+package NGS::Tools::GATK::Roles::IndelRealigner;
 use Moose::Role;
 use MooseX::Params::Validate;
+
+with 'NGS::Tools::GATK::Roles::Core';
 
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
+use File::Basename;
+use Carp;
 
 =head1 NAME
 
-NGS::Tools::GATK::Role::Pileup
+NGS::Tools::GATK::Role::IndelRealigner
 
 =head1 SYNOPSIS
 
-A Perl Moose role for the Genome Analysis Toolkit (GATK) Pileup walker.
+A Perl Moose role that wraps the Genome Analysis Toolkit IndelRealigner  program.
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->Pileup()
+=head2 $obj->IndelRealigner()
 
-A method that generates the command to execute GATK's Pileup program.
+Method for realigning reads against known insertion/deletion events.
 
 =head3 Arguments:
 
 =over 2
 
-=item * bam: BAM file to process.
+=item * bam: BAM file to be processed (required)
 
-=item * output: name of output file
+=item * output: name of output file (optional)
 
-=item * reference: Reference genome used in BAM alignment.
+=item * reference: genome reference file in FASTA format (required)
 
-=item * interval: name of interval file for specific regions of interest
-
-=item * memory: memory to allocate to the Java engine
-
-=item * java: full path to the Java program (default: java)
-
-=item * gatk: full path to the GenomeAnalysisTK.jar file (default: GenomeAnalysisTK.jar)
-
-=item * coverage_threshold: maximum coverage which will be used to downsample pileup (default: 100,000,000)
+=item * target: name of target interval file created by the RealignerTargetCreator program
 
 =back
 
 =head3 Return Values:
 
-=over 2
+Returns a hash with the following elements.
 
-Returns a hash reference containing:
+=over2
 
-=item * cmd: executable GATK command
+=item * cmd: command to be executed
 
-=item * output: name of output file from the GATK pileup command
+=item * output: name of the output file containing the indel realigned read alignments
 
 =back
 
 =cut
 
-sub Pileup {
+sub IndelRealigner {
 	my $self = shift;
 	my %args = validated_hash(
 		\@_,
@@ -74,10 +70,9 @@ sub Pileup {
 			},
 		reference => {
 			isa			=> 'Str',
-			required	=> 0,
-			default		=> '/usr/local/ref/homosapien/ucsc/hg19/fasta/genome.fa'
+			required	=> 1
 			},
-		interval => {
+		target => {
 			isa			=> 'Str',
 			required	=> 0,
 			default		=> ''
@@ -96,11 +91,6 @@ sub Pileup {
 			isa			=> 'Str',
 			required	=> 0,
 			default		=> 'GenomeAnalysisTK.jar'
-			},
-		coverage_threshold => {
-			isa			=> 'Str',
-			required	=> 0,
-			default		=> ''
 			}
 		);
 
@@ -108,14 +98,12 @@ sub Pileup {
 		$args{'memory'},
 		'g'
 		);
-
 	my $output;
 	if ($args{'output'} eq '') {
 		$output = join('.',
 			File::Basename::basename($args{'bam'}, qw( .sam .bam )),
-			'gatk',
-			'pileup',
-			'txt'
+			'indelrealigned',
+			'bam'
 			);	
 		}
 	else {
@@ -128,25 +116,20 @@ sub Pileup {
 		'-jar',
 		$args{'gatk'}
 		);
-
 	my $options = join(' ',
-		'-T Pileup',
-		'-I', $args{'bam'},
+		'-T IndelRealigner',
 		'-o', $output,
-        '-R', $args{'reference'}
+		''
 		);
 
-	if ($args{'interval'} ne '') {
-		$options = join(' ',
-			$options,
-			'-L', $args{'interval'}
-			);
+	# TODO: this is a place holder to remind me to implement the RealignerTargetCreator
+	# program
+	if ($args{'target'} ne '') {
+		# run the RealignerTargetCreator
+		
 		}
-	if ($args{'coverage_threshold'} ne '') {
-		$options = join(' ',
-			$options,
-			'--downsample_to_coverage', $args{'coverage_threshold'}
-			);
+	else {
+
 		}
 
 	my $cmd = join(' ',
@@ -182,7 +165,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::GATK::Role::Pileup
+    perldoc NGS::Tools::GATK::Role::IndelRealigner
 
 You can also look for information at:
 
@@ -252,4 +235,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::GATK::Role::Pileup
+1; # End of NGS::Tools::GATK::Role::IndelRealigner

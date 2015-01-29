@@ -1,146 +1,121 @@
-package NGS::Tools::GATK::Role::IndelRealigner;
+package NGS::Tools::GATK::Roles::RealignerTargetCreator;
 use Moose::Role;
 use MooseX::Params::Validate;
+
+with 'NGS::Tools::GATK::Roles::Core';
 
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
-use File::Basename;
-use Carp;
 
 =head1 NAME
 
-NGS::Tools::GATK::Role::IndelRealigner
+NGS::Tools::GATKRole::RealignerTargetCreator
 
 =head1 SYNOPSIS
 
-A Perl Moose role that wraps the Genome Analysis Toolkit IndelRealigner  program.
+A Perl Moose role wrapper for the GATK RealignerTargetCreator program.
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->IndelRealigner()
+=head2 $obj->create_realigner_target()
 
-Method for realigning reads against known insertion/deletion events.
+Generate the RealignerTargetCreator command and interval list.
 
 =head3 Arguments:
 
 =over 2
 
-=item * bam: BAM file to be processed (required)
+=item * reference: Genome reference in FASTA format
 
-=item * output: name of output file (optional)
+=item * bam: input BAM File
 
-=item * reference: genome reference file in FASTA format (required)
+=item * output: name of output interval file
 
-=item * target: name of target interval file created by the RealignerTargetCreator program
-
-=back
-
-=head3 Return Values:
-
-Returns a hash with the following elements.
-
-=over2
-
-=item * cmd: command to be executed
-
-=item * output: name of the output file containing the indel realigned read alignments
+=item * indel: array reference containing known Indel files
 
 =back
 
 =cut
 
-sub IndelRealigner {
-	my $self = shift;
-	my %args = validated_hash(
-		\@_,
-		bam => {
-			isa         => 'Str',
-			required    => 1
-			},
-		output => {
-			isa			=> 'Str',
-			required	=> 0,
-			default		=> ''
-			},
-		reference => {
-			isa			=> 'Str',
-			required	=> 1
-			},
-		target => {
-			isa			=> 'Str',
-			required	=> 0,
-			default		=> ''
-			},
-		memory => {
-			isa			=> 'Int',
-			required	=> 0,
-			default		=> 8
-			},
-		java => {
-			isa			=> 'Str',
-			required	=> 0,
-			default		=> 'java'
-			},
-		gatk => {
-			isa			=> 'Str',
-			required	=> 0,
-			default		=> 'GenomeAnalysisTK.jar'
-			}
-		);
+sub create_realigner_target {
+  my $self = shift;
+  my %args = validated_hash(
+    \@_,
+    bam => {
+      isa     => 'Str',
+      required  => 1
+      },
+    reference => {
+      isa         => 'Str',
+      required    => 1
+      },
+    output => {
+      isa     => 'Str',
+      required  => 0,
+      default   => ''
+      },
+    known_sites => {
+      isa     => 'ArrayRef',
+      required  => 0,
+      default   => ['']
+      }
+    );
 
-	my $memory = join('',
-		$args{'memory'},
-		'g'
-		);
-	my $output;
-	if ($args{'output'} eq '') {
-		$output = join('.',
-			File::Basename::basename($args{'bam'}, qw( .sam .bam )),
-			'indelrealigned',
-			'bam'
-			);	
-		}
-	else {
-		$output = $args{'output'};
-		}
+  my $memory = join('',
+    $args{'memory'},
+    'g'
+    );
+  my $output;
+  if ($args{'output'} eq '') {
+    $output = join('.',
+      File::Basename::basename($args{'bam'}, qw( .sam .bam )),
+      'intervals'
+      );
+    }
+  else {
+    $output = $args{'output'};
+    }
 
-	my $program = join(' ',
-		$args{'java'},
-		'-Xmx' . $memory,
-		'-jar',
-		$args{'gatk'}
-		);
-	my $options = join(' ',
-		'-T IndelRealigner',
-		'-o', $output,
-		''
-		);
+  my $program = join(' ',
+    $args{'java'},
+    '-Xmx' . $memory,
+    '-jar',
+    $args{'gatk'}
+    );
+  my $options = join(' ',
+    '-T RealignerTargetCreator',
+    '-o' . $output
+    );
+  foreach my $known_site (@{$args{'known_sites'}}) {
+    if ($known_site eq '') {
+      next;
+      }
+    else {
+      $options = join(' ',
+        $options,
+        '--known', $known_site
+        );
+      }
+    }
 
-	# TODO: this is a place holder to remind me to implement the RealignerTargetCreator
-	# program
-	if ($args{'target'} ne '') {
+  # java command to mimic
+  # java -Xmx2g -jar GenomeAnalsysisTK.jar
+  # -T RealignerTargetCreator,
+  # -R fef.fasta,
+  # -I input.bam ,
+  # -o forIndel.Realigner.intervals
+  # --knowm <sites>
 
-		}
-	else {
+  my %return_values = (
 
-		}
+    );
 
-	my $cmd = join(' ',
-		$program,
-		$options
-		);
-
-	my %return_values = (
-		cmd => $cmd,
-		output => $output
-		);
-
-	return(\%return_values);
-	}
+  return(\%return_values);
+  }
 
 =head1 AUTHOR
 
@@ -162,7 +137,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::GATK::Role::IndelRealigner
+    perldoc NGS::Tools::GATKRole::RealignerTargetCreator
 
 You can also look for information at:
 
@@ -232,4 +207,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::GATK::Role::IndelRealigner
+1; # End of NGS::Tools::GATKRole::RealignerTargetCreator

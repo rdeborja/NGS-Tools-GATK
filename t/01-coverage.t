@@ -14,7 +14,7 @@ my $test_class_factory = MooseX::ClassCompositor->new(
 	);
 
 # create a temporary class based on the given Moose::Role package
-my $test_class = $test_class_factory->class_for('NGS::Tools::GATK::Role::DepthOfCoverage');
+my $test_class = $test_class_factory->class_for('NGS::Tools::GATK::Roles::DepthOfCoverage');
 
 # instantiate the test class based on the given role
 my $gatk;
@@ -26,20 +26,19 @@ lives_ok
 
 my $bam = "$Bin/data/01-test.bam";
 my $ref = "$Bin/data/01-test.fa";
-my $intervals = "$Bin/data/gatk.intervals";
-
+my $gatk_jar = "/usr/local/sw/gatk/GenomeAnalysisTK.jar";
 my $gatk_coverage = $gatk->generate_depth_of_coverage(
 	bam => $bam,
 	ref => $ref,
-	intervals => $intervals
+	gatk => $gatk_jar
 	);
 my $expected_cmd = join(' ',
-	'java -Xmx8g -jar $GATKROOT/GenomeAnalysisTK.jar',
+	'java -Xmx8g -jar',
+	'/usr/local/sw/gatk/GenomeAnalysisTK.jar',
 	'-T DepthOfCoverage',
 	'-o 01-test.gatk.depthofcoverage',
 	"-I $bam",
-	"-R $ref",
-	"-L $intervals"
+	"-R $ref"
 	);
 
 is($gatk_coverage->{'cmd'}, $expected_cmd, "GATK DepthOfCoverage command matches expected");

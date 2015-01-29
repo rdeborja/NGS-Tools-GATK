@@ -3,11 +3,12 @@ bin/depthofcoverage.pl
 Build.PL
 Changes
 lib/NGS/Tools/GATK.pm
-lib/NGS/Tools/GATK/Role/DepthOfCoverage.pm
-lib/NGS/Tools/GATK/Role/IndelRealigner.pm
-lib/NGS/Tools/GATK/Role/Pileup.pm
-lib/NGS/Tools/GATK/Role/RealignerTargetCreator.pm
-lib/NGS/Tools/GATK/Role/UnifiedGenotyper.pm
+lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm
+lib/NGS/Tools/GATK/Roles/Core.pm
+lib/NGS/Tools/GATK/Roles/DepthOfCoverage.pm
+lib/NGS/Tools/GATK/Roles/IndelRealigner.pm
+lib/NGS/Tools/GATK/Roles/Pileup.pm
+lib/NGS/Tools/GATK/Roles/RealignerTargetCreator.pm
 Makefile.PL
 MANIFEST			This list of files
 META.json
@@ -18,5 +19,14 @@ t/02-indelrealign.t
 t/03-pileup.t
 t/data/01-test.bam
 t/data/01-test.fa
+t/data/exampleBAM.bam
+t/data/exampleBAM.bam.bai
+t/data/exampleBAM.intervals
+t/data/exampleBAM.read1.fastq.gz
+t/data/exampleBAM.read2.fastq.gz
+t/data/exampleBAM.realigned.bai
+t/data/exampleBAM.realigned.bam
+t/data/exampleFASTA.dict
+t/data/exampleFASTA.fasta
+t/data/exampleFASTA.fasta.fai
 t/data/gatk.intervals
-t/data/genome.fa

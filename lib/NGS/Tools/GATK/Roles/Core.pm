@@ -1,4 +1,4 @@
-package NGS::Tools::GATK::Role::UnifiedGenotyper;
+package NGS::Tools::GATK::Roles::Core;
 use Moose::Role;
 use MooseX::Params::Validate;
 
@@ -9,54 +9,62 @@ use autodie;
 
 =head1 NAME
 
-NGS::Tools::GATK::Role::UnifiedGenotyper
+NGS::Tools::GATK::Roles::Core
 
 =head1 SYNOPSIS
 
-A Perl Moose role that wraps the GATK UnifiedGenotyper program.
+A set of Perl Moose attributes that are used amongst all GATK programs.
 
 =head1 ATTRIBUTES AND DELEGATES
 
-=head1 SUBROUTINES/METHODS
+=head2 $obj->reference
 
-=head2 $obj->UnifiedGenotyper()
-
-A method that generates the command to execute GATK's UnifiedGenotyper.
-
-=head3 Arguments:
-
-=over 2
-
-=item * bam: BAM file to process
-
-=back
+Reference genome in FASTA format.
 
 =cut
 
-sub UnifiedGenotyper {
-	my $self = shift;
-	my %args = validated_hash(
-		\@_,
-		bam => {
-			isa         => 'Str',
-			required    => 1
-			},
-		reference => {
-			isa			=> 'Str',
-			required	=> 0,
-			default		=> '/usr/local/ref/homosapien/ucsc/hg19/fasta/genome.fa'
-			},
-		
-		);
+has 'reference' => (
+    is          => 'rw',
+    isa         => 'Str',
+    required	=> 0,
+    default		=> '',
+    reader		=> 'get_reference',
+    writer		=> 'set_reference'
+    );
 
-java -Xmx8g -jar /hpf/largeprojects/adam/local/sw/gatk/3.1.1/GenomeAnalysisTK.jar -T UnifiedGenotyper -R /hpf/largeprojects/adam/hyper/data/genome.fa -I /hpf/largeprojects/adam/projects/downsmrd/data/hg19/targeted/bam/1055_2/1055_2_R1.picard.rg.bam -o 1055_2.gatk.ug.vcf -L /hpf/largeprojects/adam/local/genomes/homosapiens/mutect/1.1.4/intervals/ucsc/hg19/chrX.intervals
+=head2 $obj->dbsnp
 
-	my %return_values = (
+dbSNP file in VCF format.
 
-		);
+=cut
 
-	return(\%return_values);
-	}
+has 'dbsnp' => (
+    is          => 'rw',
+    isa         => 'Str',
+    required    => 0,
+    default     => '',
+    reader      => 'get_dbsnp',
+    writer      => 'set_dbsnp'
+    );
+
+=head2 $obj->known_sites
+
+A list of known indel sites.
+
+=cut
+
+has 'known_sites' => (
+    is          => 'rw',
+    isa         => 'ArrayRef[Str]',
+    required    => 0,
+    default     => sub { return [] },
+    reader		=> 'get_known_sites',
+    writer		=> 'set_known_sites'
+    );
+
+
+=head1 SUBROUTINES/METHODS
+
 =head1 AUTHOR
 
 Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
@@ -64,8 +72,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 =head1 ACKNOWLEDGEMENT
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
-
-Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 
@@ -77,7 +83,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::GATK::Role::UnifiedGenotyper
+    perldoc NGS::Tools::GATK::Roles::Core
 
 You can also look for information at:
 
@@ -147,4 +153,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::GATK::Role::UnifiedGenotyper
+1; # End of NGS::Tools::GATK::Roles::Core

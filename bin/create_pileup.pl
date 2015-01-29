@@ -15,7 +15,7 @@ use Getopt::Long;
 use Pod::Usage;
 use NGS::Tools::GATK;
 use File::ShareDir ':ALL';
-use Data::Dumper;
+use HPF::PBS;
 
 ### COMMAND LINE DEFAULT ARGUMENTS ################################################################
 # list of arguments and default values go here as hash key/value pairs
@@ -84,12 +84,12 @@ sub main {
     # create the grid engine executable shell script
     my $memory = $opts{'memory'} * 2;
     my $template_dir = join('/',
-        dist_dir('HPF-SGE'),
+        dist_dir('HPF'),
         'templates'
         );
     my $template = 'submit_to_sge.template';
     my @hold_for = ();
-    my $gatk_script = $gatk->create_sge_shell_scripts(
+    my $gatk_script = $gatk->create_cluster_shell_script(
         command => $pileup->{'cmd'},
         jobname => join('_', 'gatk', 'pileup'),
         template_dir => $template_dir,

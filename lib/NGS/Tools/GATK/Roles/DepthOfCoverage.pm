@@ -1,4 +1,4 @@
-package NGS::Tools::GATK::Role::DepthOfCoverage;
+package NGS::Tools::GATK::Roles::DepthOfCoverage;
 use Moose::Role;
 use MooseX::Params::Validate;
 
@@ -69,18 +69,12 @@ sub generate_depth_of_coverage {
 			},
 		gatk => {
 			isa			=> 'Str',
-			required	=> 0,
-			default		=> '$GATKROOT/GenomeAnalysisTK.jar'
+			required	=> 1
 			},
 		memory => {
 			isa			=> 'Int',
 			required	=> 0,
 			default		=> 8
-			},
-		intervals => {
-			isa			=> 'Str',
-			reuqired	=> 0,
-			default		=> ''
 			}
 		);
 
@@ -129,14 +123,6 @@ sub generate_depth_of_coverage {
 		'-R', $args{'ref'}
 		);
 
-	if ($args{'intervals'} ne '') {
-		$options = join(' ',
-			$options,
-			'-L',
-			$args{'intervals'}
-			);
-		}
-
 	my $cmd = join(' ',
 		$program,
 		$options
@@ -157,8 +143,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 =head1 ACKNOWLEDGEMENT
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
-
-Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 

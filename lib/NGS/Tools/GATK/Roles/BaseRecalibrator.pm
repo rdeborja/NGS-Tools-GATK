@@ -1,4 +1,4 @@
-package NGS::Tools::GATKRole::RealignerTargetCreator;
+package NGS::Tools::GATK::Roles::BaseRecalibrator;
 use Moose::Role;
 use MooseX::Params::Validate;
 
@@ -9,65 +9,15 @@ use autodie;
 
 =head1 NAME
 
-NGS::Tools::GATKRole::RealignerTargetCreator
+NGS::Tools::GATK::Roles::BaseRecalibrator
 
 =head1 SYNOPSIS
 
-A Perl Moose role wrapper for the GATK RealignerTargetCreator program.
+Perl Moose role for the GATK Base Quality Recalibrator (BaseRecalibrator).
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
-
-=head2 $obj->RealignerTargetCreator()
-
-Generate the RealignerTargetCreator command and interval list.
-
-=head3 Arguments:
-
-=over 2
-
-=item * reference: Genome reference in FASTA format
-
-=item * bam: input BAM File
-
-=item * output: name of output interval file
-
-=item * indel: array reference containing known Indel files
-
-=back
-
-=cut
-
-sub RealignerTargetCreator {
-	my $self = shift;
-	my %args = validated_hash(
-		\@_,
-		bam => {
-			isa			=> 'Str',
-			required	=> 1
-			},
-		reference => {
-			isa         => 'Str',
-			required    => 1
-			},
-		output => {
-			isa			=> 'Str',
-			required	=> 0,
-			default		=> ''
-			},
-		indel => {
-			isa			=> 'ArrayRef',
-			required	=> 
-			}
-		);
-
-	my %return_values = (
-
-		);
-
-	return(\%return_values);
-	}
 
 =head1 AUTHOR
 
@@ -76,8 +26,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 =head1 ACKNOWLEDGEMENT
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
-
-Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 
@@ -89,7 +37,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::GATKRole::RealignerTargetCreator
+    perldoc NGS::Tools::GATK::Roles::BaseRecalibrator
 
 You can also look for information at:
 
@@ -159,4 +107,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::GATKRole::RealignerTargetCreator
+1; # End of NGS::Tools::GATK::Roles::BaseRecalibrator

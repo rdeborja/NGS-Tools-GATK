@@ -1,9 +1,6 @@
-package NGS::Tools::GATK;
-use Moose;
+package NGS::Tools::GATK::Roles::Pileup;
+use Moose::Role;
 use MooseX::Params::Validate;
-
-with 'NGS::Tools::GATK::Roles::DepthOfCoverage';
-with 'NGS::Tools::GATK::Roles::Pileup';
 
 use strict;
 use warnings FATAL => 'all';
@@ -12,50 +9,168 @@ use autodie;
 
 =head1 NAME
 
-NGS::Tools::GATK
-
-=head1 VERSION
-
-=cut
-
-our $VERSION = '0.03';
+NGS::Tools::GATK::Role::Pileup
 
 =head1 SYNOPSIS
 
-A Perl Moose class to wrap the Genome Analysis Toolkit (GATK).
-
-	use NGS::Tools::GATK;
-
-	my  = NGS::Tools::GATK->new();
-
-	...
+A Perl Moose role for the Genome Analysis Toolkit (GATK) Pileup walker.
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
 
-=head2 ->BUILD()
+=head2 $obj->Pileup()
 
-Post-constructor initialization (called automatically as part of new())
+A method that generates the command to execute GATK's Pileup program.
 
 =head3 Arguments:
 
-=over2
+=over 2
 
-=item * : reference to hash of arguments
+=item * bam: BAM file to process.
+
+=item * output: name of output file
+
+=item * reference: Reference genome used in BAM alignment.
+
+=item * interval: name of interval file for specific regions of interest
+
+=item * memory: memory to allocate to the Java engine
+
+=item * java: full path to the Java program (default: java)
+
+=item * gatk: full path to the GenomeAnalysisTK.jar file (default: GenomeAnalysisTK.jar)
+
+=item * coverage_threshold: maximum coverage which will be used to downsample pileup (default: 100,000,000)
+
+=back
+
+=head3 Return Values:
+
+=over 2
+
+Returns a hash reference containing:
+
+=item * cmd: executable GATK command
+
+=item * output: name of output file from the GATK pileup command
 
 =back
 
 =cut
 
-sub BUILD {
+sub Pileup {
 	my $self = shift;
-	my $args = shift;
+	my %args = validated_hash(
+		\@_,
+		bam => {
+			isa         => 'Str',
+			required    => 1
+			},
+		output => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> ''
+			},
+		reference => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> '/usr/local/ref/homosapien/ucsc/hg19/fasta/genome.fa'
+			},
+		interval => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> ''
+			},
+		memory => {
+			isa			=> 'Int',
+			required	=> 0,
+			default		=> 8
+			},
+		java => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> 'java'
+			},
+		gatk => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> 'GenomeAnalysisTK.jar'
+			},
+		coverage_threshold => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> ''
+			}
+		);
+
+	my $memory = join('',
+		$args{'memory'},
+		'g'
+		);
+
+	my $output;
+	if ($args{'output'} eq '') {
+		$output = join('.',
+			File::Basename::basename($args{'bam'}, qw( .sam .bam )),
+			'gatk',
+			'pileup',
+			'txt'
+			);	
+		}
+	else {
+		$output = $args{'output'};
+		}
+
+	my $program = join(' ',
+		$args{'java'},
+		'-Xmx' . $memory,
+		'-jar',
+		$args{'gatk'}
+		);
+
+	my $options = join(' ',
+		'-T Pileup',
+		'-I', $args{'bam'},
+		'-o', $output,
+        '-R', $args{'reference'}
+		);
+
+	if ($args{'interval'} ne '') {
+		$options = join(' ',
+			$options,
+			'-L', $args{'interval'}
+			);
+		}
+	if ($args{'coverage_threshold'} ne '') {
+		$options = join(' ',
+			$options,
+			'--downsample_to_coverage', $args{'coverage_threshold'}
+			);
+		}
+
+	my $cmd = join(' ',
+		$program,
+		$options
+		);
+
+	my %return_values = (
+		cmd => $cmd,
+		output => $output
+		);
+
+	return(\%return_values);
 	}
 
 =head1 AUTHOR
 
 Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
+
+=head1 ACKNOWLEDGEMENT
+
+Dr. Adam Shlien, PI -- The Hospital for Sick Children
+
+Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 
@@ -67,7 +182,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::GATK
+    perldoc NGS::Tools::GATK::Role::Pileup
 
 You can also look for information at:
 
@@ -135,8 +250,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =cut
 
-no Moose;
+no Moose::Role;
 
-__PACKAGE__->meta->make_immutable;
-
-1; # End of NGS::Tools::GATK
+1; # End of NGS::Tools::GATK::Role::Pileup

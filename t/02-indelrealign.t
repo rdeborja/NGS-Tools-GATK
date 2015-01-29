@@ -14,7 +14,7 @@ my $test_class_factory = MooseX::ClassCompositor->new(
 	);
 
 # create a temporary class based on the given Moose::Role package
-my $test_class = $test_class_factory->class_for('NGS::Tools::GATK::Role::IndelRealigner');
+my $test_class = $test_class_factory->class_for('NGS::Tools::GATK::Roles::IndelRealigner');
 
 # instantiate the test class based on the given role
 my $gatk;
@@ -29,6 +29,12 @@ my $reference = 'test.fa';
 my $run_indelrealign = $gatk->IndelRealigner(
 	bam => $bam,
 	reference => $reference
+	);
+my $expected_command = join(' ',
+	"java -Xmx8g",
+	'-jar GenomeAnalysisTK.jar',
+	'-T IndelRealigner',
+	'-o test.indelrealigned.bam '
 	);
 print Dumper($run_indelrealign);
 
