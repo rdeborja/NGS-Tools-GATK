@@ -18,6 +18,7 @@ use Pod::Usage;
 use NGS::Tools::GATK;
 use File::ShareDir ':ALL';
 use HPF::PBS;
+use IPC::Run3;
 
 ### COMMAND LINE DEFAULT ARGUMENTS ################################################################
 # list of arguments and default values go here as hash key/value pairs
@@ -91,9 +92,14 @@ sub main {
         jobname => join('_', 'gatk', 'coverage'),
         template_dir => $template_dir,
         template => $template,
-        memory => $memory,
-        hold_for => \@hold_for        
+        memory => $memory
         );
+
+    my $submit_command = join(' ',
+        'qsub',
+        $gatk_script->{'output'}
+        );
+    my $run3_command_status = system($submit_command);
 
     return 0;
     }
@@ -115,7 +121,6 @@ B<depthofcoverage.pl> [options] [file ...]
     --man           full documentation
     --bam           name of BAM file to process (required)
     --ref           full path to reference genome used for BAM alignment (optional)
-    --intervals     interval file list (optional)
 
 =head1 OPTIONS
 

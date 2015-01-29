@@ -8,4 +8,4 @@ Revision history for NGS-Tools-GATK
 
 0.03    2015-01-29
         Fixed role names and tests after moving directory lib/NGS/Tools/GATK/Role to
-        lib/NGS/Tools/GATK/Roles
+        lib/NGS/Tools/GATK/Roles.  Added option to omit generating each base depth.

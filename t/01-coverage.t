@@ -38,7 +38,8 @@ my $expected_cmd = join(' ',
 	'-T DepthOfCoverage',
 	'-o 01-test.gatk.depthofcoverage',
 	"-I $bam",
-	"-R $ref"
+	"-R $ref",
+	'--omitDepthOutputAtEachBase'
 	);
 
 is($gatk_coverage->{'cmd'}, $expected_cmd, "GATK DepthOfCoverage command matches expected");

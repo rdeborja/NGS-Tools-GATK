@@ -120,7 +120,8 @@ sub generate_depth_of_coverage {
 		'-T DepthOfCoverage',
 		'-o', $output,
 		'-I', $args{'bam'},
-		'-R', $args{'ref'}
+		'-R', $args{'ref'},
+		'--omitDepthOutputAtEachBase'
 		);
 
 	my $cmd = join(' ',
