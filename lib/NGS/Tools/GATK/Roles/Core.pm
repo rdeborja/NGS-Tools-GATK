@@ -57,7 +57,9 @@ has 'known_sites' => (
     is          => 'rw',
     isa         => 'ArrayRef[Str]',
     required    => 0,
-    default     => sub { return [] },
+    default     => sub { return [
+        
+        ] },
     reader		=> 'get_known_sites',
     writer		=> 'set_known_sites'
     );
