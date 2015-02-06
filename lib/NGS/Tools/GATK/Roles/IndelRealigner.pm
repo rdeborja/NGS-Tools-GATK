@@ -3,6 +3,7 @@ use Moose::Role;
 use MooseX::Params::Validate;
 
 with 'NGS::Tools::GATK::Roles::Core';
+with 'NGS::Tools::GATK::Roles::RealignerTargetCreator';
 
 use strict;
 use warnings FATAL => 'all';
@@ -17,7 +18,9 @@ NGS::Tools::GATK::Role::IndelRealigner
 
 =head1 SYNOPSIS
 
-A Perl Moose role that wraps the Genome Analysis Toolkit IndelRealigner  program.
+A Perl Moose role that wraps the Genome Analysis Toolkit IndelRealigner program.  The interval
+file that is generated depends on the method RealignerTargetCreator.  This has been wrapped
+in a separate role and is above as a required role.
 
 =head1 ATTRIBUTES AND DELEGATES
 
@@ -127,16 +130,6 @@ sub IndelRealigner {
 		'-o', $output,
 		'-I', $args{'bam'}
 		);
-
-	# TODO: this is a place holder to remind me to implement the RealignerTargetCreator
-	# program
-	if ($args{'target'} ne '') {
-		# run the RealignerTargetCreator
-		
-		}
-	else {
-
-		}
 
 	my $cmd = join(' ',
 		$program,

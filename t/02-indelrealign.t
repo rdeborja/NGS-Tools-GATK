@@ -26,16 +26,26 @@ lives_ok
 
 my $bam = 'test.bam';
 my $reference = 'test.fa';
-my $run_indelrealign = $gatk->IndelRealigner(
+
+# run the RealignerTargetCreator method first, this will generate an interval file
+# that will be used by the IndelRealigner
+
+my $run_targetcreator = $gatk->RealignerTargetCreator(
 	bam => $bam,
-	reference => $reference
+	reference => $reference,
 	);
-my $expected_command = join(' ',
-	"java -Xmx8g",
-	'-jar GenomeAnalysisTK.jar',
-	'-T IndelRealigner',
-	'-o test.indelrealigned.bam',
-	'-I test.bam'
-	);
-#print Dumper($run_indelrealign);
-is($run_indelrealign->{'cmd'}, $expected_command, "Command matches expected")
+print Dumper($run_targetcreator);
+
+# my $run_indelrealign = $gatk->IndelRealigner(
+# 	bam => $bam,
+# 	reference => $reference
+# 	);
+# my $expected_command = join(' ',
+# 	"java -Xmx8g",
+# 	'-jar GenomeAnalysisTK.jar',
+# 	'-T IndelRealigner',
+# 	'-o test.indelrealigned.bam',
+# 	'-I test.bam'
+# 	);
+# #print Dumper($run_indelrealign);
+# is($run_indelrealign->{'cmd'}, $expected_command, "Command matches expected")

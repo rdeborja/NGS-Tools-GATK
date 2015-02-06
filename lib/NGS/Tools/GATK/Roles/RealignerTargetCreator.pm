@@ -21,7 +21,7 @@ A Perl Moose role wrapper for the GATK RealignerTargetCreator program.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->create_realigner_target()
+=head2 $obj->RealignerTargetCreator()
 
 Generate the RealignerTargetCreator command and interval list.
 
@@ -41,7 +41,7 @@ Generate the RealignerTargetCreator command and interval list.
 
 =cut
 
-sub create_realigner_target {
+sub RealignerTargetCreator {
   my $self = shift;
   my %args = validated_hash(
     \@_,
@@ -50,18 +50,23 @@ sub create_realigner_target {
       required  => 1
       },
     reference => {
-      isa         => 'Str',
-      required    => 1
+      isa       => 'Str',
+      required  => 1
       },
     output => {
-      isa     => 'Str',
+      isa       => 'Str',
       required  => 0,
       default   => ''
       },
     known_sites => {
-      isa     => 'ArrayRef',
+      isa       => 'ArrayRef',
       required  => 0,
       default   => ['']
+      },
+    tmpdir => {
+      isa       => 'Str',
+      required  => 0,
+      default   => '/tmp'
       }
     );
 
@@ -69,10 +74,11 @@ sub create_realigner_target {
     $args{'memory'},
     'g'
     );
+
   my $output;
   if ($args{'output'} eq '') {
     $output = join('.',
-      File::Basename::basename($args{'bam'}, qw( .sam .bam )),
+      File::Basename::basename($args{'bam'}, qw( .bam )),
       'intervals'
       );
     }
@@ -97,18 +103,10 @@ sub create_realigner_target {
     else {
       $options = join(' ',
         $options,
-        '--known', $known_site
+        '-known', $known_site
         );
       }
     }
-
-  # java command to mimic
-  # java -Xmx2g -jar GenomeAnalsysisTK.jar
-  # -T RealignerTargetCreator,
-  # -R fef.fasta,
-  # -I input.bam ,
-  # -o forIndel.Realigner.intervals
-  # --knowm <sites>
 
   my %return_values = (
 
