@@ -70,7 +70,8 @@ sub IndelRealigner {
 			},
 		reference => {
 			isa			=> 'Str',
-			required	=> 1
+			required	=> 0,
+			default		=> $self->get_reference()
 			},
 		target => {
 			isa			=> 'Str',
@@ -91,6 +92,11 @@ sub IndelRealigner {
 			isa			=> 'Str',
 			required	=> 0,
 			default		=> 'GenomeAnalysisTK.jar'
+			},
+		known_sites => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> $self->get_known_sites()
 			}
 		);
 
@@ -119,7 +125,7 @@ sub IndelRealigner {
 	my $options = join(' ',
 		'-T IndelRealigner',
 		'-o', $output,
-		''
+		'-I', $args{'bam'}
 		);
 
 	# TODO: this is a place holder to remind me to implement the RealignerTargetCreator
