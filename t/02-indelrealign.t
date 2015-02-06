@@ -1,4 +1,4 @@
-use Test::More tests => 1;
+use Test::More tests => 2;
 use Test::Moose;
 use Test::Exception;
 use MooseX::ClassCompositor;
@@ -34,7 +34,8 @@ my $expected_command = join(' ',
 	"java -Xmx8g",
 	'-jar GenomeAnalysisTK.jar',
 	'-T IndelRealigner',
-	'-o test.indelrealigned.bam '
+	'-o test.indelrealigned.bam',
+	'-I test.bam'
 	);
-print Dumper($run_indelrealign);
-
+#print Dumper($run_indelrealign);
+is($run_indelrealign->{'cmd'}, $expected_command, "Command matches expected")
