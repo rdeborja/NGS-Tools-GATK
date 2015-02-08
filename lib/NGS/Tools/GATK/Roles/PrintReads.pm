@@ -1,4 +1,4 @@
-package NGS::Tools::GATK::Roles::BaseRecalibrator;
+package NGS::Tools::GATK::Roles::PrintReads;
 use Moose::Role;
 use MooseX::Params::Validate;
 
@@ -12,31 +12,31 @@ use File::Basename;
 
 =head1 NAME
 
-NGS::Tools::GATK::Roles::BaseRecalibrator
+NGS::Tools::GATK::Roles::PrintReads
 
 =head1 SYNOPSIS
 
-Perl Moose role for the GATK Base Quality Recalibrator (BaseRecalibrator).
+A Perl package that print out a BAM file after BaseRecalibrator method has been applied.
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->BaseRecalibrator()
+=head2 $obj->PrintReads()
 
-A Moose method that wraps the GATK BaseRecalibrator.jar command.
+A Perl Moose role that handles GATK's PrintReads functionality.
 
 =head3 Arguments:
 
 =over 2
 
-=item * bam: Input BAM file to process.
+=item * bam: full path to the BAM file to process
 
 =back
 
 =cut
 
-sub BaseRecalibrator {
+sub PrintReads {
     my $self = shift;
     my %args = validated_hash(
         \@_,
@@ -54,10 +54,10 @@ sub BaseRecalibrator {
             required    => 0,
             default     => ''
             },
-        known_sites => {
-            isa         => 'ArrayRef',
+        bqsr => {
+            isa         => 'Str',
             required    => 0,
-            default     => $self->get_known_sites()
+            default     => ''
             },
         java => {
             isa         => 'Str',
@@ -72,7 +72,7 @@ sub BaseRecalibrator {
         memory => {
             isa         => 'Int',
             required    => 0,
-            default     => 26
+            default     => 24
             },
         tmpdir => {
             isa         => 'Str',
@@ -82,7 +82,7 @@ sub BaseRecalibrator {
         number_of_cores => {
             isa         => 'Int',
             required    => 0,
-            default     => 1
+            default     => 4
             }
         );
 
@@ -93,9 +93,9 @@ sub BaseRecalibrator {
     my $output;
     if ($args{'output'} eq '') {
         $output = join('.',
-            basename($args{'bam'}, qw(.bam)),
+            basename($args{'bam'}, qw( .bam )),
             'recal',
-            'table'
+            'bam'
             );
         }
     else {
@@ -117,24 +117,22 @@ sub BaseRecalibrator {
         '-jar',
         $args{'gatk'}
         );
-
     my $options = join(' ',
-        '-T BaseRecalibrator',
+        '-T PrintReads',
         '-I', $args{'bam'},
         '-R', $args{'reference'},
         '-o', $output,
-        '-l INFO',
-        '-nct', $args{'number_of_cores'}
+        '-nct', $args{'number_of_cores'},
+        '-l INFO'
         );
-    if (scalar(@{$args{'known_sites'}} > 0)) {
-        foreach my $known_site (@{$args{'known_sites'}}) {
-            $options = join(' ',
-                $options,
-                '-knownSites',
-                $known_site
-                );
-            }
+    if ($args{'bqsr'} ne '') {
+        $options = join(' ',
+            $options,
+            '-BQSR',
+            $args{'bqsr'}
+            );
         }
+
     my $cmd = join(' ',
         $program,
         $options
@@ -166,7 +164,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::GATK::Roles::BaseRecalibrator
+    perldoc NGS::Tools::GATK::Roles::PrintReads
 
 You can also look for information at:
 
@@ -236,4 +234,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::GATK::Roles::BaseRecalibrator
+1; # End of NGS::Tools::GATK::Roles::PrintReads

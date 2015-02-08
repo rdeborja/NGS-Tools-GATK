@@ -9,3 +9,7 @@ Revision history for NGS-Tools-GATK
 0.03    2015-01-29
         Fixed role names and tests after moving directory lib/NGS/Tools/GATK/Role to
         lib/NGS/Tools/GATK/Roles.  Added option to omit generating each base depth.
+
+0.04    2015-02-08
+        Added methods for BaseRecalibrator.jar and PrintReads.jar to implement entire Best Practices
+        for BAM file processing.

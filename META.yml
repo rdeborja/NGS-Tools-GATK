@@ -16,7 +16,7 @@ name: NGS-Tools-GATK
 provides:
   NGS::Tools::GATK:
     file: lib/NGS/Tools/GATK.pm
-    version: '0.03'
+    version: '0.04'
   NGS::Tools::GATK::Roles::BaseRecalibrator:
     file: lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm
   NGS::Tools::GATK::Roles::Core:
@@ -27,6 +27,8 @@ provides:
     file: lib/NGS/Tools/GATK/Roles/IndelRealigner.pm
   NGS::Tools::GATK::Roles::Pileup:
     file: lib/NGS/Tools/GATK/Roles/Pileup.pm
+  NGS::Tools::GATK::Roles::PrintReads:
+    file: lib/NGS/Tools/GATK/Roles/PrintReads.pm
   NGS::Tools::GATK::Roles::RealignerTargetCreator:
     file: lib/NGS/Tools/GATK/Roles/RealignerTargetCreator.pm
 requires:
@@ -35,4 +37,4 @@ requires:
   Moose: '0'
   Moose::Role: '0'
   MooseX::Params::Validate: '0'
-version: '0.03'
+version: '0.04'

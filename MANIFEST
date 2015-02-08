@@ -8,6 +8,7 @@ lib/NGS/Tools/GATK/Roles/Core.pm
 lib/NGS/Tools/GATK/Roles/DepthOfCoverage.pm
 lib/NGS/Tools/GATK/Roles/IndelRealigner.pm
 lib/NGS/Tools/GATK/Roles/Pileup.pm
+lib/NGS/Tools/GATK/Roles/PrintReads.pm
 lib/NGS/Tools/GATK/Roles/RealignerTargetCreator.pm
 Makefile.PL
 MANIFEST			This list of files
@@ -17,6 +18,9 @@ README
 t/01-coverage.t
 t/02-indelrealign.t
 t/03-pileup.t
+t/04-realignertargetcreator.t
+t/05-baserecalibrator.t
+t/06-printreads.t
 t/data/01-test.bam
 t/data/01-test.fa
 t/data/exampleBAM.bam

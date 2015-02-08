@@ -62,6 +62,50 @@ has 'known_sites' => (
     writer		=> 'set_known_sites'
     );
 
+=head2 $obj->gatk
+
+Full path to the GenomeAnalysisTK.jar file.
+
+=cut
+
+has 'gatk' => (
+    is          => 'rw',
+    isa         => 'Str',
+    required    => 0,
+    default     => '${GATK}',
+    reader      => 'get_gatk',
+    writer      => 'set_gatk'
+    );
+
+=head2 $obj->java
+
+Full path to the Java program.
+
+=cut
+
+has 'java' => (
+    is          => 'rw',
+    isa         => 'Str',
+    required    => 0,
+    default     => 'java',
+    reader      => 'get_java',
+    writer      => 'set_java'
+    );
+
+=head2 $obj->tmpdir
+
+Full path to the temporary directory
+
+=cut
+
+has 'tmpdir' => (
+    is          => 'rw',
+    isa         => 'Str',
+    required    => 0,
+    default     => '',
+    reader      => 'get_tmpdir',
+    writer      => 'set_tmpdir'
+    );
 
 =head1 SUBROUTINES/METHODS
 

@@ -8,6 +8,7 @@ use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
+use File::Basename;
 
 =head1 NAME
 
@@ -33,9 +34,31 @@ Generate the RealignerTargetCreator command and interval list.
 
 =item * bam: input BAM File
 
-=item * output: name of output interval file
+=item * reference: name of reference FASTA file
 
-=item * indel: array reference containing known Indel files
+=item * output: name of output file (default: script will use modified input BAM filename)
+
+=item * known_sites: an array reference containing VCF file(s) to use for known indels
+
+=item * memory: amount of heap space to define for the Java program
+
+=item * tmpdir: full path to the tmp directory where intemediate files will be generated
+
+=item * gatk: full path to the GenomeAnalysisTK.jar file
+
+=item * java: full path to the Java program (default: java)
+
+=back
+
+=head3 Return Values:
+
+Returns a hash with the following elements.
+
+=over2
+
+=item * cmd: command to be executed
+
+=item * output: name of the output file containing the indel realigned read alignments
 
 =back
 
@@ -51,7 +74,8 @@ sub RealignerTargetCreator {
       },
     reference => {
       isa       => 'Str',
-      required  => 1
+      required  => 0,
+      default   => $self->get_reference()
       },
     output => {
       isa       => 'Str',
@@ -63,13 +87,27 @@ sub RealignerTargetCreator {
       required  => 0,
       default   => ['']
       },
+    memory => {
+      isa       => 'Int',
+      required  => 0,
+      default   => 24
+      },
     tmpdir => {
       isa       => 'Str',
       required  => 0,
-      default   => '/tmp'
+      default   => $self->get_tmpdir()
+      },
+    gatk => {
+      isa       => 'Str',
+      required  => 0,
+      default   => $self->get_gatk()
+      },
+    java => {
+      isa       => 'Str',
+      required  => 0,
+      default   => $self->get_java()
       }
     );
-
   my $memory = join('',
     $args{'memory'},
     'g'
@@ -78,7 +116,7 @@ sub RealignerTargetCreator {
   my $output;
   if ($args{'output'} eq '') {
     $output = join('.',
-      File::Basename::basename($args{'bam'}, qw( .bam )),
+      basename($args{'bam'}, qw( .bam )),
       'intervals'
       );
     }
@@ -88,13 +126,28 @@ sub RealignerTargetCreator {
 
   my $program = join(' ',
     $args{'java'},
-    '-Xmx' . $memory,
+    '-Xmx' . $memory
+    );
+
+  if ($args{'tmpdir'} ne '') {
+    $program = join(' ',
+      $program,
+      '-Djava.io.tmpdir=' . $args{'tmpdir'}
+      );
+    }
+
+  $program = join(' ',
+    $program,
     '-jar',
     $args{'gatk'}
     );
+
   my $options = join(' ',
     '-T RealignerTargetCreator',
-    '-o' . $output
+    '-I', $args{'bam'},
+    '-R', $args{'reference'},
+    '-l INFO',
+    '-o ' . $output
     );
   foreach my $known_site (@{$args{'known_sites'}}) {
     if ($known_site eq '') {
@@ -108,8 +161,14 @@ sub RealignerTargetCreator {
       }
     }
 
-  my %return_values = (
+  my $cmd = join(' ',
+    $program,
+    $options
+    );
 
+  my %return_values = (
+    cmd => $cmd,
+    output => $output
     );
 
   return(\%return_values);
@@ -122,8 +181,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 =head1 ACKNOWLEDGEMENT
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
-
-Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 

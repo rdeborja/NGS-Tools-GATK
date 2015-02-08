@@ -20,32 +20,30 @@ my $test_class = $test_class_factory->class_for('NGS::Tools::GATK::Roles::IndelR
 my $gatk;
 lives_ok
 	{
-		$gatk = $test_class->new();
+		$gatk = $test_class->new(
+            tmpdir => '/tmp'
+            );
 		}
 	'Class instantiated';
 
 my $bam = 'test.bam';
 my $reference = 'test.fa';
-
-# run the RealignerTargetCreator method first, this will generate an interval file
-# that will be used by the IndelRealigner
-
-my $run_targetcreator = $gatk->RealignerTargetCreator(
+my $target = 'target.intervals';
+my $run_indelrealign = $gatk->IndelRealigner(
 	bam => $bam,
 	reference => $reference,
+    target => $target
 	);
-print Dumper($run_targetcreator);
-
-# my $run_indelrealign = $gatk->IndelRealigner(
-# 	bam => $bam,
-# 	reference => $reference
-# 	);
-# my $expected_command = join(' ',
-# 	"java -Xmx8g",
-# 	'-jar GenomeAnalysisTK.jar',
-# 	'-T IndelRealigner',
-# 	'-o test.indelrealigned.bam',
-# 	'-I test.bam'
-# 	);
-# #print Dumper($run_indelrealign);
-# is($run_indelrealign->{'cmd'}, $expected_command, "Command matches expected")
+print Dumper($run_indelrealign);
+my $expected_command = join(' ',
+	"java -Xmx24g",
+    '-Djava.io.tmpdir=/tmp',
+    '-jar ${GATK}',
+ 	'-T IndelRealigner',
+    '-I test.bam',
+    '-R test.fa',
+    '-targetIntervals target.intervals',
+	'-o test.indelrealigned.bam',
+    '-compress 0'
+	);
+is($run_indelrealign->{'cmd'}, $expected_command, "Command matches expected")

@@ -3,7 +3,6 @@ use Moose::Role;
 use MooseX::Params::Validate;
 
 with 'NGS::Tools::GATK::Roles::Core';
-with 'NGS::Tools::GATK::Roles::RealignerTargetCreator';
 
 use strict;
 use warnings FATAL => 'all';
@@ -42,6 +41,16 @@ Method for realigning reads against known insertion/deletion events.
 
 =item * target: name of target interval file created by the RealignerTargetCreator program
 
+=item * memory: amount of memory to allocate to the Java heap space
+
+=item * java: full path to the Java program
+
+=item * gatk: full path to the GenomeAnalysisTK.jar file
+
+=item * known_sites: an array reference ontaining VCF file(s) to use for known indels
+
+=item * tmpdir: full path to the tmp directory where intermediate files will be generated
+
 =back
 
 =head3 Return Values:
@@ -78,28 +87,32 @@ sub IndelRealigner {
 			},
 		target => {
 			isa			=> 'Str',
-			required	=> 0,
-			default		=> ''
+			required	=> 1
 			},
 		memory => {
 			isa			=> 'Int',
 			required	=> 0,
-			default		=> 8
+			default		=> 24
 			},
 		java => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> 'java'
+			default		=> $self->get_java()
 			},
 		gatk => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> 'GenomeAnalysisTK.jar'
+			default		=> $self->get_gatk()
 			},
 		known_sites => {
-			isa			=> 'Str',
+			isa			=> 'ArrayRef',
 			required	=> 0,
 			default		=> $self->get_known_sites()
+			},
+		tmpdir => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> $self->get_tmpdir()
 			}
 		);
 
@@ -107,10 +120,11 @@ sub IndelRealigner {
 		$args{'memory'},
 		'g'
 		);
+
 	my $output;
 	if ($args{'output'} eq '') {
 		$output = join('.',
-			File::Basename::basename($args{'bam'}, qw( .sam .bam )),
+			File::Basename::basename($args{'bam'}, qw( .bam )),
 			'indelrealigned',
 			'bam'
 			);	
@@ -121,14 +135,27 @@ sub IndelRealigner {
 
 	my $program = join(' ',
 		$args{'java'},
-		'-Xmx' . $memory,
+		'-Xmx' . $memory
+		);
+	if ($args{'tmpdir'}) {
+		$program = join(' ',
+			$program,
+			'-Djava.io.tmpdir=' . $args{'tmpdir'}
+			);
+		}
+	$program = join(' ',
+		$program,
 		'-jar',
 		$args{'gatk'}
 		);
+
 	my $options = join(' ',
 		'-T IndelRealigner',
+		'-I', $args{'bam'},
+		'-R', $args{'reference'},
+		'-targetIntervals', $args{'target'},
 		'-o', $output,
-		'-I', $args{'bam'}
+		'-compress 0'		
 		);
 
 	my $cmd = join(' ',
@@ -151,8 +178,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 =head1 ACKNOWLEDGEMENT
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
-
-Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 
