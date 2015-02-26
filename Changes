@@ -13,3 +13,6 @@ Revision history for NGS-Tools-GATK
 0.04    2015-02-08
         Added methods for BaseRecalibrator.jar and PrintReads.jar to implement entire Best Practices
         for BAM file processing.
+
+0.05   2015-02-26
+       Added role for UnifiedGenotyper including test.

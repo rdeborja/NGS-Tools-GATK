@@ -2,21 +2,21 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-  'INSTALLDIRS' => 'site',
-  'NAME' => 'NGS::Tools::GATK',
   'PL_FILES' => {},
+  'NAME' => 'NGS::Tools::GATK',
+  'PREREQ_PM' => {
+                   'Carp' => 0,
+                   'Test::More' => 0,
+                   'Moose::Role' => 0,
+                   'File::Basename' => 0,
+                   'Moose' => 0,
+                   'MooseX::Params::Validate' => 0
+                 },
+  'VERSION_FROM' => 'lib/NGS/Tools/GATK.pm',
   'EXE_FILES' => [
                    'bin/create_pileup.pl',
                    'bin/depthofcoverage.pl'
                  ],
-  'PREREQ_PM' => {
-                   'Carp' => 0,
-                   'Test::More' => 0,
-                   'MooseX::Params::Validate' => 0,
-                   'Moose' => 0,
-                   'Moose::Role' => 0,
-                   'File::Basename' => 0
-                 },
-  'VERSION_FROM' => 'lib/NGS/Tools/GATK.pm'
+  'INSTALLDIRS' => 'site'
 )
 ;

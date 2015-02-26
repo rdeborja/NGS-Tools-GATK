@@ -16,7 +16,7 @@ name: NGS-Tools-GATK
 provides:
   NGS::Tools::GATK:
     file: lib/NGS/Tools/GATK.pm
-    version: '0.04'
+    version: '0.05'
   NGS::Tools::GATK::Roles::BaseRecalibrator:
     file: lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm
   NGS::Tools::GATK::Roles::Core:
@@ -31,10 +31,12 @@ provides:
     file: lib/NGS/Tools/GATK/Roles/PrintReads.pm
   NGS::Tools::GATK::Roles::RealignerTargetCreator:
     file: lib/NGS/Tools/GATK/Roles/RealignerTargetCreator.pm
+  NGS::Tools::GATK::Roles::UnifiedGenotyper:
+    file: lib/NGS/Tools/GATK/Roles/UnifiedGenotyper.pm
 requires:
   Carp: '0'
   File::Basename: '0'
   Moose: '0'
   Moose::Role: '0'
   MooseX::Params::Validate: '0'
-version: '0.04'
+version: '0.05'

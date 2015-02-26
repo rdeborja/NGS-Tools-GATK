@@ -37,7 +37,7 @@
    "provides" : {
       "NGS::Tools::GATK" : {
          "file" : "lib/NGS/Tools/GATK.pm",
-         "version" : "0.04"
+         "version" : "0.05"
       },
       "NGS::Tools::GATK::Roles::BaseRecalibrator" : {
          "file" : "lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm"
@@ -59,8 +59,11 @@
       },
       "NGS::Tools::GATK::Roles::RealignerTargetCreator" : {
          "file" : "lib/NGS/Tools/GATK/Roles/RealignerTargetCreator.pm"
+      },
+      "NGS::Tools::GATK::Roles::UnifiedGenotyper" : {
+         "file" : "lib/NGS/Tools/GATK/Roles/UnifiedGenotyper.pm"
       }
    },
    "release_status" : "stable",
-   "version" : "0.04"
+   "version" : "0.05"
 }
