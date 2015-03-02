@@ -75,6 +75,11 @@ sub generate_depth_of_coverage {
 			isa			=> 'Int',
 			required	=> 0,
 			default		=> 8
+			},
+		intervals => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> ''
 			}
 		);
 
@@ -123,6 +128,15 @@ sub generate_depth_of_coverage {
 		'-R', $args{'ref'},
 		'--omitDepthOutputAtEachBase'
 		);
+
+	# for exomes, we can use intervals to calculate the targeted region, otherwise
+	# the tool will attempt to calculate the depth across the whole genome
+	if ($args{'intervals'} ne '') {
+		$options = join(' ',
+			$options,
+			'-L', $args{'intervals'}
+			);
+		}
 
 	my $cmd = join(' ',
 		$program,

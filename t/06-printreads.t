@@ -35,8 +35,6 @@ my $printreads = $gatk->PrintReads(
     bqsr => $recal_table,
     number_of_cores => 4,
     );
-print $printreads->{'cmd'}, "\n";
-
 my $expected_cmd = join(' ',
     'java',
     '-Xmx24g',

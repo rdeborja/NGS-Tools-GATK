@@ -27,24 +27,26 @@ lives_ok
 
 my $bam = 'test.bam';
 my $reference = 'ref.fa';
+my $dbsnp = 'dbsnp.vcf';
 my $baserecal = $gatk->BaseRecalibrator(
     bam => $bam,
     reference => $reference,
-    number_of_cores => 4
+    number_of_cores => 4,
+    known_sites => [$dbsnp],
+    tmpdir => '/tmp'
     );
-
-print $baserecal->{'cmd'}, "\n";
 
 my $expected_cmd = join(' ',
     'java',
     '-Xmx26g',
-#    '-Djava.io.tmpdir=/tmp',
+    '-Djava.io.tmpdir=/tmp',
     '-jar ${GATK}',
     '-T BaseRecalibrator',
     '-I test.bam',
     '-R ref.fa',
     '-o test.recal.table',
     '-l INFO',
-    '-nct 4'
+    '-nct 4',
+    '-knownSites dbsnp.vcf'
     );
 is($baserecal->{'cmd'}, $expected_cmd, "Command matches expected");

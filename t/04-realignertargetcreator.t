@@ -33,7 +33,6 @@ my $targetcreator = $gatk->RealignerTargetCreator(
     reference => 'ref.fa',
     memory => 24
     );
-print $targetcreator->{'cmd'}, "\n";
 my $expected_command = join(' ',
     'java',
     '-Xmx24g',

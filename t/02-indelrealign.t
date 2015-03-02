@@ -34,7 +34,6 @@ my $run_indelrealign = $gatk->IndelRealigner(
 	reference => $reference,
     target => $target
 	);
-print Dumper($run_indelrealign);
 my $expected_command = join(' ',
 	"java -Xmx24g",
     '-Djava.io.tmpdir=/tmp',

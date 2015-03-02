@@ -8,6 +8,11 @@
 # 0.01          2014-04-17      rdeborja            Initial development
 # 0.02          2014-04-17      rdeborja            added creation of SGE Bash script
 # 0.03          2015-01-27      rdeborja            replaced HPF::SGE::Roles with HPF::PBS
+# 0.04          2015-02-27      rdeborja            added interval_list functionality to calculate
+#                                                   depth over target regions only
+# 0.05          2015-02-27      rdeborja            added sample to list of command line arguments,
+#                                                   this will be used in the jobname submitted to
+#                                                   cluster and output files.
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -25,10 +30,11 @@ use IPC::Run3;
 our %opts = (
     bam => undef,
     ref => '',
-    intervals => '/hpf/largeprojects/adam/ref_data/targets/SureSelect_All_Exon_50mb_with_annotation_HG19_BED.removeChrUn.interval',
+    intervals => '',
     java => '/hpf/tools/centos6/java/1.7.0/bin/java',
     gatk => '/hpf/tools/centos6/gatk/2.8.1/GenomeAnalysisTK.jar',
-    memory => 4
+    memory => 4,
+    sample => undef
     );
 
 ### MAIN CALLER ###################################################################################
@@ -53,9 +59,11 @@ sub main {
         "man",
         "bam|b=s",
         "ref|r:s",
+        "intervals:s",
         "java:s",
-        "picard:s",
-        "memory:i"
+        "gatk:s",
+        "memory:i",
+        "sample=s"
         ) or pod2usage(64);
     
     pod2usage(1) if $opts{'help'};
@@ -82,14 +90,15 @@ sub main {
         ref => $opts{'ref'},
         java => $opts{'java'},
         gatk => $opts{'gatk'},
-        memory => $opts{'memory'}
+        memory => $opts{'memory'},
+        intervals => $opts{'intervals'}
         );
 
     my $pbs = HPF::PBS->new();
     my @hold_for = ();
     my $gatk_script = $pbs->create_cluster_shell_script(
         command => $gatk_coverage_run->{'cmd'},
-        jobname => join('_', 'gatk', 'coverage'),
+        jobname => join('_', $opts{'sample'}, 'gatk', 'coverage'),
         template_dir => $template_dir,
         template => $template,
         memory => $memory
@@ -121,6 +130,11 @@ B<depthofcoverage.pl> [options] [file ...]
     --man           full documentation
     --bam           name of BAM file to process (required)
     --ref           full path to reference genome used for BAM alignment (optional)
+    --intervals     full path to a .interval_list file containing targets (optional)
+    --sample        name of sample being processed (required)
+    --java          full path to the Java program (optional)
+    --gatk          full path to the Genome Analysis TK jar file (optional)
+    --memory        amount of memory to allocate to the heap space for Java (optional)
 
 =head1 OPTIONS
 
@@ -142,11 +156,31 @@ Name of BAM file to process (required).
 
 Full path to the reference genome FASTA file.  Default:
 
-/hpf/largeprojects/adam/ref_data/targets/SureSelect_All_Exon_50mb_with_annotation_HG19_BED.removeChrUn.interval
-
 =item B<--intervals>
 
-File containing intervals.  See http://www.broadinstitute.org/gatk/guide/article?id=1204
+File containing intervals.  By default, the coverage will be calculated across the entire genome.
+For exome capture, use:
+
+/hpf/largeprojects/adam/ref_data/targets/Agilent/SureSelect/V5/S04380110_Covered.sort.merged.interval_list
+
+See http://www.broadinstitute.org/gatk/guide/article?id=1204.
+
+=item B<--sample>
+
+Name of sample being processed.  This will be used in various locations in the pipeline including
+job names and output files.
+
+=item B<--java>
+
+Full path to the Java program.  Default: /hpf/tools/centos6/java/1.7.0/bin/java
+
+=item B<--gatk>
+
+Full path to the Genome Analysis Toolkit JAR file.  Default: /hpf/tools/centos6/gatk/2.8.1/GenomeAnalysisTK.jar
+
+=item B<--memory>
+
+Amount of memory to allocate for the Java program heap space in gigabytes.  Default: 4
 
 =back
 
@@ -156,15 +190,15 @@ B<depthofcoverage.pl> Generate the GATK DepthOfCoverage files.
 
 =head1 EXAMPLE
 
-depthofcoverage.pl --bam test.bam --ref hg19.fa --intervals /hpf/largeprojects/adam/ref_data/targets/SureSelect_All_Exon_50mb_with_annotation_HG19_BED.removeChrUn.interval
+depthofcoverage.pl --bam test.bam --sample testsample --ref hg19.fa --intervals file.interval_list --memory 8
 
 =head1 AUTHOR
 
-Richard de Borja -- Molecular Genetics
+Richard de Borja -- The Hospital for Sick Children
 
-The Hospital for Sick Children
+=head1 ACKNOWLEDGEMENTS
 
-=head1 SEE ALSO
+Dr. Adam Shlien, PI -- The Hospital for Sick Children
 
 =cut
 

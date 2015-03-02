@@ -16,3 +16,6 @@ Revision history for NGS-Tools-GATK
 
 0.05   2015-02-26
        Added role for UnifiedGenotyper including test.
+
+0.06   2015-02-27
+       Added interval_list to method generate_depth_of_coverage in DepthOfCoverage.pm.

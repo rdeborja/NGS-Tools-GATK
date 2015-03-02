@@ -107,6 +107,39 @@ has 'tmpdir' => (
     writer      => 'set_tmpdir'
     );
 
+=head2 $obj->validate_interval_file()
+
+Validate the interval file.  The file must have an extension of interval_list and
+should contain a BED like list of regions.
+
+=head3 Arguments:
+
+=over 2
+
+=item * arg: argument
+
+=back
+
+=cut
+
+sub validate_interval_file {
+    my $self = shift;
+    my %args = validated_hash(
+        \@_,
+        arg => {
+            isa         => 'Str',
+            required    => 0,
+            default     => ''
+            }
+        );
+
+    my %return_values = (
+
+        );
+
+    return(\%return_values);
+    }
+
 =head1 SUBROUTINES/METHODS
 
 =head1 AUTHOR
