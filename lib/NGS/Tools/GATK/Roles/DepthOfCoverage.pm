@@ -41,6 +41,8 @@ Generate the GATK DepthOfCoverage command.
 
 =item * memory: amount of memory to allocate for Java heap
 
+=item * intervals: interval file to restrict coverage calculations to target
+
 =back
 
 =cut
