@@ -10,9 +10,8 @@
 # 0.03          2015-01-27      rdeborja            replaced HPF::SGE::Roles with HPF::PBS
 # 0.04          2015-02-27      rdeborja            added interval_list functionality to calculate
 #                                                   depth over target regions only
-# 0.05          2015-02-27      rdeborja            added sample to list of command line arguments,
-#                                                   this will be used in the jobname submitted to
-#                                                   cluster and output files.
+# 0.05          2015-04-01      rdeborja            updated default intervals parameter to whole
+#                                                   genome
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -29,12 +28,13 @@ use IPC::Run3;
 # list of arguments and default values go here as hash key/value pairs
 our %opts = (
     bam => undef,
-    ref => '',
-    intervals => '',
+    ref => '/hpf/largeprojects/adam/local/reference/homosapiens/ucsc/hs37d5/fasta/hs37d5.fa',
+    intervals => '/hpf/largeprojects/adam/ref_data/targets/hs37a.interval_list',
     java => '/hpf/tools/centos6/java/1.7.0/bin/java',
     gatk => '/hpf/tools/centos6/gatk/2.8.1/GenomeAnalysisTK.jar',
     memory => 4,
-    sample => undef
+    sample => undef,
+    submit => 'true'
     );
 
 ### MAIN CALLER ###################################################################################
@@ -63,7 +63,8 @@ sub main {
         "java:s",
         "gatk:s",
         "memory:i",
-        "sample=s"
+        "sample=s",
+        "submit:s"
         ) or pod2usage(64);
     
     pod2usage(1) if $opts{'help'};
