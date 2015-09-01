@@ -2,8 +2,6 @@ package NGS::Tools::GATK::Roles::CombineVariants;
 use Moose::Role;
 use MooseX::Params::Validate;
 
-
-
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
