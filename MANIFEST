@@ -1,9 +1,11 @@
 bin/create_pileup.pl
 bin/depthofcoverage.pl
+bin/mergevcf.pl
 Build.PL
 Changes
 lib/NGS/Tools/GATK.pm
 lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm
+lib/NGS/Tools/GATK/Roles/CombineVariants.pm
 lib/NGS/Tools/GATK/Roles/Core.pm
 lib/NGS/Tools/GATK/Roles/DepthOfCoverage.pm
 lib/NGS/Tools/GATK/Roles/IndelRealigner.pm
@@ -23,6 +25,7 @@ t/04-realignertargetcreator.t
 t/05-baserecalibrator.t
 t/06-printreads.t
 t/07-unifiedgenotyper.t
+t/08-combine_variants.t
 t/data/01-test.bam
 t/data/01-test.fa
 t/data/exampleBAM.bam
