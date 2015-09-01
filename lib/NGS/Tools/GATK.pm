@@ -5,6 +5,7 @@ use MooseX::Params::Validate;
 with 'NGS::Tools::GATK::Roles::DepthOfCoverage';
 with 'NGS::Tools::GATK::Roles::Pileup';
 with 'NGS::Tools::GATK::Roles::UnifiedGenotyper';
+with 'NGS::Tools::GATK::Roles::CombineVariants';
 
 use strict;
 use warnings FATAL => 'all';
@@ -17,9 +18,11 @@ NGS::Tools::GATK
 
 =head1 VERSION
 
+0.07
+
 =cut
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 =head1 SYNOPSIS
 
