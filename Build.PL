@@ -21,7 +21,8 @@ my $builder = Module::Build->new(
 				'Moose::Role'                   => 0,
 				'MooseX::Params::Validate'      => 0,
 				'File::Basename'                => 0,
-				'Carp'                          => 0
+				'Carp'                          => 0,
+                'File::Find::Rule'              => 0.3
     },
     add_to_cleanup     => [ 'NGS-Tools-GATK-*' ],
     create_makefile_pl => 'traditional',
