@@ -28,7 +28,8 @@ our %opts = (
     memory => 6,
     reference => '/hpf/largeprojects/adam/local/reference/homosapiens/ucsc/hs37d5/fasta/hs37d5.fa',
     java => '/hpf/tools/centos6/java/1.7.0/bin/java',
-    gatk => '/hpf/tools/centos6/gatk/2.8.1/GenomeAnalysisTK.jar'
+    gatk => '/hpf/tools/centos6/gatk/2.8.1/GenomeAnalysisTK.jar',
+    submit_to_cluster => 'true'
     );
 
 ### MAIN CALLER ###################################################################################
@@ -57,7 +58,8 @@ sub main {
         "memory|m:i",
         "reference|r:s",
         "java:s",
-        "gatk:s"
+        "gatk:s",
+        "submit_to_cluster:s"
         ) or pod2usage(64);
     
     pod2usage(1) if $opts{'help'};
@@ -107,8 +109,8 @@ sub main {
         jobname => join('_', $opts{'sample'}, 'gatk', 'combinevariants'),
         template_dir => $template_dir,
         template => $template,
-        memory => $opts{'memory'},
-        submit => 'false'
+        memory => $opts{'memory'} + 6,
+        submit => $opts{'submit_to_cluster'}
         );
     return 0;
     }
@@ -126,10 +128,16 @@ mergevcf.pl
 B<mergevcf.pl> [options] [file ...]
 
     Options:
-    --help          brief help message
-    --man           full documentation
-    --dir           directory containing VCF files (default: ./)
-    --
+    --help                  brief help message
+    --man                   full documentation
+    --dir                   directory containing VCF files (default: ./)
+    --sample                name of sample being processed (required)
+    --output                name of output file (default: '')
+    --memory                amount of memory to allocated for heap space in GB (default: 6)
+    --reference             FASTA format reference genome used for alignment (default: /hpf/largeprojects/adam/local/reference/homosapiens/ucsc/hs37d5/fasta/hs37d5.fa)
+    --java                  full path to the java engine (default: /hpf/tools/centos6/java/1.7.0/bin/java)
+    --gatk                  full path to the GATK jar file (default: /hpf/tools/centos6/gatk/2.8.1/GenomeAnalysisTK.jar)
+    --submit_to_cluster     submit to the cluster (default: true)
 
 =head1 OPTIONS
 
@@ -146,6 +154,34 @@ Print the manual page.
 =item B<--dir>
 
 Name of directory containing VCF files to search for (default: ./).
+
+=item B<--sample>
+
+Name of sample being processed.
+
+=item <--output>
+
+Full path to the output file (default: '')
+
+=item <--memory>
+
+Amount of memory in GB to allocate to the heap space (default: 6)
+
+=item <--reference>
+
+Reference genome used in FASTA format (default: /hpf/largeprojects/adam/local/reference/homosapiens/ucsc/hs37d5/fasta/hs37d5.fa)
+
+=item <--java>
+
+Full path to the java program (default: /hpf/tools/centos6/java/1.7.0/bin/java)
+
+=item <--gatk>
+
+Full path to the Genome Analysis Toolkit suite of tools (default: /hpf/tools/centos6/gatk/2.8.1/GenomeAnalysisTK.jar)
+
+=item <--submit_to_cluster>
+
+A flag to determine whether to submit the job to the cluster (default: true)
 
 =back
 

@@ -1,4 +1,4 @@
-package NGS::Tools::GATK::Roles::BaseRecalibrator;
+package NGS::Tools::GATK::Roles::HaplotypeCaller;
 use Moose::Role;
 use MooseX::Params::Validate;
 
@@ -12,47 +12,49 @@ use File::Basename;
 
 =head1 NAME
 
-NGS::Tools::GATK::Roles::BaseRecalibrator
+NGS::Tools::GATK::Roles::HaplotypeCaller
 
 =head1 SYNOPSIS
 
-Perl Moose role for the GATK Base Quality Recalibrator (BaseRecalibrator).
+A Perl Moose role that wraps the GATK Haplotype Caller.
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->BaseRecalibrator()
+=head2 $obj->call_haplotype()
 
-A Moose method that wraps the GATK BaseRecalibrator.jar command.
+A method that wraps the GATK HaplotypeCaller.jar program.
 
 =head3 Arguments:
 
 =over 2
 
-=item * bam: Input BAM file to process (required)
+=item * bam: name of BAM file to process
 
-=item * reference: Reference genome in FASTA format
+=item * reference: name of reference FASTA file
 
-=item * output: name of output file (optional)
+=item * output: name of output file (default: script will use modified input BAM filename)
 
-=item * known_sites: A list of known Indel sites in VCF format
+=item * known_sites: an array reference containing VCF file(s) to use for known indels
 
-=item * java: full path to the Java engine
+=item * memory: amount of heap space to define for the Java program
 
-=item * gatk: full path to the GATK jar file
+=item * tmpdir: full path to the tmp directory where intemediate files will be generated
 
-=item * memory: amount of memory in GB to allocate to the heap space (default: 26)
+=item * gatk: full path to the GenomeAnalysisTK.jar file
 
-=item * tmpdir: name of temporary directory for intermediate files
+=item * java: full path to the Java program (default: java)
 
-=item * threads: number of CPU threads to use (default: 1)
+=item * dbsnp: name of dbSNP file for annotation of mutations
+
+=item * interval: interval to use for parallelization, in our case we use the chromosome/contig
 
 =back
 
 =cut
 
-sub BaseRecalibrator {
+sub call_haplotype {
     my $self = shift;
     my %args = validated_hash(
         \@_,
@@ -61,57 +63,63 @@ sub BaseRecalibrator {
             required    => 1
             },
         reference => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_reference()
-            },
+          isa       => 'Str',
+          required  => 0,
+          default   => $self->get_reference()
+          },
         output => {
-            isa         => 'Str',
-            required    => 0,
-            default     => ''
-            },
+          isa       => 'Str',
+          required  => 0,
+          default   => ''
+          },
         known_sites => {
-            isa         => 'ArrayRef',
-            required    => 0,
-            default     => $self->get_known_sites()
-            },
-        java => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_java()
-            },
-        gatk => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_gatk()
-            },
+          isa       => 'ArrayRef',
+          required  => 0,
+          default   => ['']
+          },
         memory => {
-            isa         => 'Int',
-            required    => 0,
-            default     => 26
-            },
+          isa       => 'Int',
+          required  => 0,
+          default   => 10
+          },
         tmpdir => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_tmpdir()
-            },
-        threads => {
-            isa         => 'Int',
-            required    => 0,
-            default     => 1
-            }
+          isa       => 'Str',
+          required  => 0,
+          default   => $self->get_tmpdir()
+          },
+        gatk => {
+          isa       => 'Str',
+          required  => 0,
+          default   => $self->get_gatk()
+          },
+        java => {
+          isa       => 'Str',
+          required  => 0,
+          default   => $self->get_java()
+          },
+        dbsnp => {
+          isa       => 'Str',
+          required  => 0,
+          default   => $self->get_dbsnp()
+          },
+        interval => {
+          isa       => 'Str',
+          required  => 0,
+          default   => ''
+          }
         );
 
     my $memory = join('',
-        $args{'memory'},
+        $args{'memory'}, 
         'g'
         );
+
     my $output;
     if ($args{'output'} eq '') {
         $output = join('.',
             basename($args{'bam'}, qw(.bam)),
-            'recal',
-            'table'
+            'hap_snv',
+            'vcf'
             );
         }
     else {
@@ -124,7 +132,6 @@ sub BaseRecalibrator {
         );
     if ($args{'tmpdir'} ne '') {
         $program = join(' ',
-            $program,
             '-Djava.io.tmpdir=' . $args{'tmpdir'}
             );
         }
@@ -132,25 +139,30 @@ sub BaseRecalibrator {
         $program,
         '-jar',
         $args{'gatk'}
+        );s
+
+    # review the params on https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php
+    my $options = join(' ',
+        '-T HaplotypeCaller',
+        '-R', $args{'reference'},
+        '-I', $args{'bam'},
+        '-o', $output,
+        '--dbsnp', $args{'dbsnp'},
+        '--output_mode EMIT_VARIANTS_ONLY',
+        '-rf BadCigar',
+        '--min_base_quality_score 20',
+        '-stand_call_conf 30',
+        'stand_emit_conf 10'
         );
 
-    my $options = join(' ',
-        '-T BaseRecalibrator',
-        '-I', $args{'bam'},
-        '-R', $args{'reference'},
-        '-o', $output,
-        '-l INFO',
-        '-nct', $args{'threads'}
-        );
-    if (scalar(@{$args{'known_sites'}} > 0)) {
-        foreach my $known_site (@{$args{'known_sites'}}) {
-            $options = join(' ',
-                $options,
-                '-knownSites',
-                $known_site
-                );
-            }
+    if ($args{'interval'} ne '') {
+        $options = join(' ',
+            $options,
+            '-L', $args{'interval'}
+            );
         }
+    
+    # create the fully executable GATK HaploytypeCaller command
     my $cmd = join(' ',
         $program,
         $options
@@ -166,11 +178,7 @@ sub BaseRecalibrator {
 
 =head1 AUTHOR
 
-Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
-
-=head1 ACKNOWLEDGEMENT
-
-Dr. Adam Shlien, PI -- The Hospital for Sick Children
+Richard de Borja, C<< <richard.deborja at gmail.ca> >>
 
 =head1 BUGS
 
@@ -182,7 +190,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::GATK::Roles::BaseRecalibrator
+    perldoc NGS::Tools::GATK::Roles::HaplotypeCaller
 
 You can also look for information at:
 
@@ -252,4 +260,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::GATK::Roles::BaseRecalibrator
+1; # End of NGS::Tools::GATK::Roles::HaplotypeCaller

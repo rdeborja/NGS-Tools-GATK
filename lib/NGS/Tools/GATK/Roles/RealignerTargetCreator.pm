@@ -106,6 +106,11 @@ sub RealignerTargetCreator {
       isa       => 'Str',
       required  => 0,
       default   => $self->get_java()
+      },
+    threads => {
+      isa       => 'Int',
+      required  => 0,
+      default   => 1
       }
     );
   my $memory = join('',
@@ -147,7 +152,8 @@ sub RealignerTargetCreator {
     '-I', $args{'bam'},
     '-R', $args{'reference'},
     '-l INFO',
-    '-o ' . $output
+    '-o ' . $output,
+    '-nt ' . $args{'threads'}
     );
   foreach my $known_site (@{$args{'known_sites'}}) {
     if ($known_site eq '') {

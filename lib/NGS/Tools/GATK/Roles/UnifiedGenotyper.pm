@@ -30,8 +30,6 @@ Run GATK's UnifiedGenotype program on a BAM file.
 
 =over 2
 
-=item * reference: Genome reference in FASTA format
-
 =item * bam: input BAM File
 
 =item * reference: name of reference FASTA file
@@ -47,6 +45,10 @@ Run GATK's UnifiedGenotype program on a BAM file.
 =item * gatk: full path to the GenomeAnalysisTK.jar file
 
 =item * java: full path to the Java program (default: java)
+
+=item * dbsnp: name of dbSNP file for annotation of mutations
+
+=item * interval: interval to use for parallelization, in our case we use the chromosome/contig
 
 =back
 

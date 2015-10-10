@@ -32,6 +32,22 @@ A Perl Moose role that handles GATK's PrintReads functionality.
 
 =item * bam: full path to the BAM file to process
 
+=item * reference: Reference genome in FASTA format
+
+=item * output: name of output file (optional)
+
+=item * bqsr: 
+
+=item * java: full path to the Java engine
+
+=item * gatk: full path to the GATK jar file
+
+=item * memory: amount of memory in GB to allocate to the heap space (default: 26)
+
+=item * tmpdir: name of temporary directory for intermediate files
+
+=item * threads: number of CPU threads to use (default: 1)
+
 =back
 
 =cut
@@ -79,10 +95,10 @@ sub PrintReads {
             required    => 0,
             default     => $self->get_tmpdir()
             },
-        number_of_cores => {
+        threads => {
             isa         => 'Int',
             required    => 0,
-            default     => 4
+            default     => 1
             }
         );
 
@@ -122,7 +138,7 @@ sub PrintReads {
         '-I', $args{'bam'},
         '-R', $args{'reference'},
         '-o', $output,
-        '-nct', $args{'number_of_cores'},
+        '-nct', $args{'threads'},
         '-l INFO'
         );
     if ($args{'bqsr'} ne '') {
