@@ -106,6 +106,26 @@ sub call_haplotype {
           isa       => 'Str',
           required  => 0,
           default   => ''
+          },
+        min_base_quality_score => {
+          isa       => 'Int',
+          required  => 0,
+          default   => 20
+          },
+        stand_call_conf => {
+          isa       => 'Int',
+          required  => 0,
+          default   => 30
+          },
+        stand_emit_conf => {
+          isa       => 'Int',
+          required  => 0,
+          default   => 10
+          },
+        output_mode => {
+          isa       => 'Str',
+          required  => 0,
+          default   => 'EMIT_VARIANTS_ONLY'
           }
         );
 
@@ -139,20 +159,21 @@ sub call_haplotype {
         $program,
         '-jar',
         $args{'gatk'}
-        );s
+        );
 
-    # review the params on https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php
+    # review the params on
+    # https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_haplotypecaller_HaplotypeCaller.php
     my $options = join(' ',
         '-T HaplotypeCaller',
         '-R', $args{'reference'},
         '-I', $args{'bam'},
         '-o', $output,
         '--dbsnp', $args{'dbsnp'},
-        '--output_mode EMIT_VARIANTS_ONLY',
+        '--output_mode', $args{'output_mode'},
         '-rf BadCigar',
-        '--min_base_quality_score 20',
-        '-stand_call_conf 30',
-        'stand_emit_conf 10'
+        '--min_base_quality_score', $args{'min_base_quality_score'},
+        '--stand_call_conf', $args{'stand_call_conf'},
+        '--stand_emit_conf', $args{'stand_emit_conf'}
         );
 
     if ($args{'interval'} ne '') {
