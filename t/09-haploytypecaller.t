@@ -43,8 +43,7 @@ my $expected_haplo_command = join(' ',
     '--output_mode EMIT_VARIANTS_ONLY',
     '-rf BadCigar',
     '--min_base_quality_score 20',
-    '-stand_call_conf 30',
-    'stand_emit_conf 10'
+    '--stand_call_conf 30',
+    '--stand_emit_conf 10'
     );
-is($haplo_run->{'cmd'}, $expected_haplo_command, 'Haplotype Caller command matches expected')
-;
+is($haplo_run->{'cmd'}, $expected_haplo_command, 'Haplotype Caller command matches expected');
