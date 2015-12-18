@@ -7,6 +7,7 @@ use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
 use File::Basename;
+use File::Path qw(make_path);
 
 =head1 NAME
 
@@ -29,15 +30,31 @@ A method for running mutect on a pair of tumour/normal matched samples.
 
 =over 2
 
-=item * normal: name of normal sample BAM file
+=item * normal: [required] name of normal sample BAM file
 
-=item * tumour: name of tumour sample BAM file
+=item * tumour: [required] name of tumour sample BAM file
 
-=item * sample: name of sample that will be processed
+=item * sample: [required] name of sample that will be processed
 
-=item * reference: reference genome in FASTA format 
+=item * reference: [optional] reference genome in FASTA format (default: hs37d5.fa)
 
-=item * intervals: a list of 
+=item * intervals: [optional] Array reference containing intervals to use
+
+=item * cosmic: [required] full path to the COSMIC VCF file
+
+=item * dbsnp: [required] full path to the dbSNP VCF file
+
+=item * output: [optiona] name of output file
+
+=item * java: [optional] full path to the Java engine (default: java)
+
+=item * gatk: [optional] full path to the Genome Analysis Toolkit JAR file (default: GenomeAnalysisTk.jar)
+
+=item * intervals: [optional] array reference containing the chromosomes to use with MuTect (default: 1-22, X, Y)
+
+=item * memory: [optional] memory to GB to allocate to the Java heap space (default: 4)
+
+=item * tmp: [optional] full path to the temporary directory used by Java
 
 =back
 
@@ -80,16 +97,17 @@ sub run_mutect {
         java => {
             isa         => 'Str',
             required    => 0,
-            default     => 
+            default     => 'java'
             },
         gatk => {
             isa         => 'Str',
             required    => 0,
-            default     => '${GATK}/caGenomeAnalysisTK.jar'
+            default     => 'GenomeAnalysisTK.jar'
             },
         intervals => {
-            isa         => 'ArrayRef',
-            required    => 1
+            isa         => 'ArrayRef[Str]',
+            required    => 0,
+            default     => ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X', 'Y']
             },
         memory => {
             isa         => 'Int',
@@ -103,22 +121,14 @@ sub run_mutect {
             }
         );
 
-    my $output;
-    if ($args{'output'} eq '') {
-        $output = 
-        }
-    # add the units for the memory requirements for the max heap (i.e. -Xmx parameter)
     my $memory = join('',
         $args{'memory'},
         'g'
         );
-
-    # setup the Java engine
     my $java = join(' ',
         $args{'java'},
         "-Xmx$memory",
         );
-    # create a tmpdir and use it in the java command
     if ($args{'tmp'} ne '') {
         if (! -d $args{'tmp'}) {
             make_path($args{'tmp'});
@@ -133,48 +143,37 @@ sub run_mutect {
         '-jar',
         $args{'gatk'}
         );
-
-   # java
-   #   -jar GenomeAnalysisTK.jar \
-   #   -T MuTect2 \
-   #   -R reference.fasta \
-   #   -I:tumor tumor.bam \
-   #   -I:normal normal.bam \
-   #   [--dbsnp dbSNP.vcf] \
-   #   [--cosmic COSMIC.vcf] \
-   #   [-L targets.interval_list] \
-   #   -o output.vcf
-
     my $program = '-T MuTect2';
     my $options = join(' ',
         '-R', $args{'reference'},
         '-I:tumor', $args{'tumour'},
         '-I:normal', $args{'normal'},
         '--cosmic', $args{'cosmic'},
-        '--dbsnp', $args{'dbsnp'},
-        '-out', $args{'out'}
+        '--dbsnp', $args{'dbsnp'}
         );
-
-    # setup the intervals, default to the size of the genome 
-    if ($args{'intervals'} ne '') {
-        $options = join(' ',
-            $options,
-            '--intervals', $args{'intervals'}
+    my %mutect;
+    my $cmd;
+    foreach my $interval (@{ $args{'intervals'} }) {
+        my $output = join('.',
+            $args{'sample'},
+            $interval,
+            'vcf'
             );
+        my $options_interval = join(' ',
+            $options,
+            '--intervals', $interval,
+            '-o', $output
+            );
+        $cmd = join(' ',
+            $java,
+            $program,
+            $options_interval
+            );
+        $mutect{$interval}->{'cmd'} = $cmd;
+        $mutect{$interval}->{'output'} = $output;
         }
 
-    my $cmd = join(' ',
-        $java,
-        $program,
-        $options
-        );
-
-
-    my %return_values = (
-
-        );
-
-    return(\%return_values);
+    return(\%mutect);
     }
 
 =head1 AUTHOR
