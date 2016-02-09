@@ -48,6 +48,8 @@ Generate the RealignerTargetCreator command and interval list.
 
 =item * java: full path to the Java program (default: java)
 
+=item * intervals: a list of contigs to parallelize processing (optiona, default: '')
+
 =back
 
 =head3 Return Values:
@@ -111,6 +113,11 @@ sub RealignerTargetCreator {
       isa       => 'Int',
       required  => 0,
       default   => 1
+      },
+    interval => {
+      isa       => 'Str',
+      required  => 0,
+      default   => ''
       }
     );
   my $memory = join('',
@@ -152,7 +159,6 @@ sub RealignerTargetCreator {
     '-I', $args{'bam'},
     '-R', $args{'reference'},
     '-l INFO',
-    '-o ' . $output,
     '-nt ' . $args{'threads'}
     );
   foreach my $known_site (@{$args{'known_sites'}}) {
@@ -166,6 +172,24 @@ sub RealignerTargetCreator {
         );
       }
     }
+
+  # if an interval is provided, use the -L argument to pass the
+  # interval to the command
+  if ($args{'interval'} ne '') {
+    $options = join(' ',
+      $options,
+      '-L', $args{'interval'}
+      );
+    $output = join('.',
+      $output,
+      $args{'interval'}
+      );
+    }
+    
+  $options = join(' ',
+    $options,
+    '-o ' . $output
+    );
 
   my $cmd = join(' ',
     $program,

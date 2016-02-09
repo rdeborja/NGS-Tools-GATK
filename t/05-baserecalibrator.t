@@ -31,7 +31,7 @@ my $dbsnp = 'dbsnp.vcf';
 my $baserecal = $gatk->BaseRecalibrator(
     bam => $bam,
     reference => $reference,
-    number_of_cores => 4,
+    threads => 4,
     known_sites => [$dbsnp],
     tmpdir => '/tmp'
     );

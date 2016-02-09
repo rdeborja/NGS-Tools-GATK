@@ -32,7 +32,8 @@ my $targetcreator = $gatk->RealignerTargetCreator(
     bam => 'test.bam',
     reference => 'ref.fa',
     memory => 24,
-    threads => 24
+    threads => 24,
+    interval => 1
     );
 my $expected_command = join(' ',
     'java',
@@ -43,7 +44,8 @@ my $expected_command = join(' ',
     '-I test.bam',
     '-R ref.fa',
     '-l INFO',
-    '-o test.intervals',
-    '-nt 24'
+    '-nt 24',
+    '-L 1',
+    '-o test.intervals.1'
     );
 is($targetcreator->{'cmd'}, $expected_command, 'RealignerTargetCreator command matches expected');

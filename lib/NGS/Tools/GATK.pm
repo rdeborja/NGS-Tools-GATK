@@ -18,15 +18,17 @@ NGS::Tools::GATK
 
 =head1 VERSION
 
-0.07
+0.09
 
 =cut
 
-our $VERSION = '0.07';
+our $VERSION = '0.09';
 
 =head1 SYNOPSIS
 
 A Perl Moose class to wrap the Genome Analysis Toolkit (GATK).
+
+DO NOT USE THIS CLASS DIRECTLY.  INSTEAD, CREATE CLASSES BASED ON THE ROLES WITHIN THE LIBRARY.
 
 	use NGS::Tools::GATK;
 

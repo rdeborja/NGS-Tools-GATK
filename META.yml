@@ -16,7 +16,7 @@ name: NGS-Tools-GATK
 provides:
   NGS::Tools::GATK:
     file: lib/NGS/Tools/GATK.pm
-    version: '0.07'
+    version: '0.09'
   NGS::Tools::GATK::Roles::BaseRecalibrator:
     file: lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm
   NGS::Tools::GATK::Roles::CombineVariants:
@@ -42,4 +42,4 @@ requires:
   Moose: '0'
   Moose::Role: '0'
   MooseX::Params::Validate: '0'
-version: '0.07'
+version: '0.09'

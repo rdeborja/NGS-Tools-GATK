@@ -37,7 +37,7 @@ my $mutect_run = $mutect->run_mutect(
     cosmic => $cosmic,
     dbsnp => $dbsnp,
     reference => $reference,
-#    intervals => ['1', '2']
+    intervals => ['1', '2']
     );
 
 my $expected_1_cmd = join(' ',
@@ -48,7 +48,7 @@ my $expected_1_cmd = join(' ',
     "-I:normal normal.bam",
     "--cosmic cosmic.vcf",
     "--dbsnp dbsnp.vcf",
-    "--intervals 1",
+    "-L 1",
     "-o sample.1.vcf"
     );
 is($mutect_run->{'1'}->{'cmd'}, $expected_1_cmd, "Command 1 matches expected");
@@ -60,7 +60,7 @@ my $expected_2_cmd = join(' ',
     "-I:normal normal.bam",
     "--cosmic cosmic.vcf",
     "--dbsnp dbsnp.vcf",
-    "--intervals 2",
+    "-L 2",
     "-o sample.2.vcf"
     );
 is($mutect_run->{'2'}->{'cmd'}, $expected_2_cmd, "Command 2 matches expected");

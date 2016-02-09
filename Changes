@@ -19,3 +19,10 @@ Revision history for NGS-Tools-GATK
 
 0.06   2015-02-27
        Added interval_list to method generate_depth_of_coverage in DepthOfCoverage.pm.
+
+0.08   2015-01-22
+       Added MuTect2 role for handling somatic SNVs and Indels.  MuTect2 will be deprecating
+       MuTect in the future.
+
+0.09   2016-02-08
+       Added -L argument to pass intervals to the RealignerTargetCreator method.

@@ -161,7 +161,7 @@ sub run_mutect {
             );
         my $options_interval = join(' ',
             $options,
-            '--intervals', $interval,
+            '-L', $interval,
             '-o', $output
             );
         $cmd = join(' ',

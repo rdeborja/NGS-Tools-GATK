@@ -33,7 +33,7 @@ my $printreads = $gatk->PrintReads(
     bam => $bam,
     reference => $ref,
     bqsr => $recal_table,
-    number_of_cores => 4,
+    threads => 4,
     );
 my $expected_cmd = join(' ',
     'java',
