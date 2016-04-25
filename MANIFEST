@@ -1,4 +1,3 @@
-bin/convert_mutect_to_annovar.pl
 bin/create_pileup.pl
 bin/depthofcoverage.pl
 bin/mergevcf.pl
