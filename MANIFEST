@@ -1,3 +1,4 @@
+bin/convert_mutect_to_annovar.pl
 bin/create_pileup.pl
 bin/depthofcoverage.pl
 bin/mergevcf.pl
@@ -8,7 +9,9 @@ lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm
 lib/NGS/Tools/GATK/Roles/CombineVariants.pm
 lib/NGS/Tools/GATK/Roles/Core.pm
 lib/NGS/Tools/GATK/Roles/DepthOfCoverage.pm
+lib/NGS/Tools/GATK/Roles/HaplotypeCaller.pm
 lib/NGS/Tools/GATK/Roles/IndelRealigner.pm
+lib/NGS/Tools/GATK/Roles/MuTect2.pm
 lib/NGS/Tools/GATK/Roles/Pileup.pm
 lib/NGS/Tools/GATK/Roles/PrintReads.pm
 lib/NGS/Tools/GATK/Roles/RealignerTargetCreator.pm
@@ -26,6 +29,8 @@ t/05-baserecalibrator.t
 t/06-printreads.t
 t/07-unifiedgenotyper.t
 t/08-combine_variants.t
+t/09-haploytypecaller.t
+t/10-mutect2.t
 t/data/01-test.bam
 t/data/01-test.fa
 t/data/exampleBAM.bam

@@ -38,8 +38,6 @@ A method for running mutect on a pair of tumour/normal matched samples.
 
 =item * reference: [optional] reference genome in FASTA format (default: hs37d5.fa)
 
-=item * intervals: [optional] Array reference containing intervals to use
-
 =item * cosmic: [required] full path to the COSMIC VCF file
 
 =item * dbsnp: [required] full path to the dbSNP VCF file

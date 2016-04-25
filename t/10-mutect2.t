@@ -64,4 +64,3 @@ my $expected_2_cmd = join(' ',
     "-o sample.2.vcf"
     );
 is($mutect_run->{'2'}->{'cmd'}, $expected_2_cmd, "Command 2 matches expected");
-print Dumper($mutect_run);

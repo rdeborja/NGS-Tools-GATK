@@ -25,8 +25,12 @@ provides:
     file: lib/NGS/Tools/GATK/Roles/Core.pm
   NGS::Tools::GATK::Roles::DepthOfCoverage:
     file: lib/NGS/Tools/GATK/Roles/DepthOfCoverage.pm
+  NGS::Tools::GATK::Roles::HaplotypeCaller:
+    file: lib/NGS/Tools/GATK/Roles/HaplotypeCaller.pm
   NGS::Tools::GATK::Roles::IndelRealigner:
     file: lib/NGS/Tools/GATK/Roles/IndelRealigner.pm
+  NGS::Tools::GATK::Roles::MuTect2:
+    file: lib/NGS/Tools/GATK/Roles/MuTect2.pm
   NGS::Tools::GATK::Roles::Pileup:
     file: lib/NGS/Tools/GATK/Roles/Pileup.pm
   NGS::Tools::GATK::Roles::PrintReads:
