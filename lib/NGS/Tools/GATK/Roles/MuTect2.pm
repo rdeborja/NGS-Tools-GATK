@@ -58,7 +58,7 @@ A method for running mutect on a pair of tumour/normal matched samples.
 
 =cut
 
-sub run_mutect {
+sub run_mutect2 {
     my $self = shift;
     my %args = validated_hash(
         \@_,
