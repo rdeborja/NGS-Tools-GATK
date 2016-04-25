@@ -30,7 +30,7 @@ lives_ok
         }
     'Class instantiated';
 
-my $mutect_run = $mutect->run_mutect(
+my $mutect_run = $mutect->run_mutect2(
     normal => $normal,
     tumour => $tumour,
     sample => $sample,
