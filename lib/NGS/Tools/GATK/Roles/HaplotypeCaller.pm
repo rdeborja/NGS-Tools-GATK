@@ -2,8 +2,6 @@ package NGS::Tools::GATK::Roles::HaplotypeCaller;
 use Moose::Role;
 use MooseX::Params::Validate;
 
-with 'NGS::Tools::GATK::Roles::Core';
-
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
@@ -30,9 +28,9 @@ A method that wraps the GATK HaplotypeCaller.jar program.
 
 =over 2
 
-=item * bam: name of BAM file to process
+=item * bam: an array reference containing BAM files to process (required)
 
-=item * reference: name of reference FASTA file
+=item * reference: name of reference FASTA file (required)
 
 =item * output: name of output file (default: script will use modified input BAM filename)
 
@@ -59,13 +57,12 @@ sub call_haplotype {
     my %args = validated_hash(
         \@_,
         bam => {
-            isa         => 'Str',
+            isa         => 'ArrayRef',
             required    => 1
             },
         reference => {
           isa       => 'Str',
-          required  => 0,
-          default   => $self->get_reference()
+          required  => 1
           },
         output => {
           isa       => 'Str',
@@ -75,7 +72,7 @@ sub call_haplotype {
         known_sites => {
           isa       => 'ArrayRef',
           required  => 0,
-          default   => ['']
+          default   => undef
           },
         memory => {
           isa       => 'Int',
@@ -85,22 +82,22 @@ sub call_haplotype {
         tmpdir => {
           isa       => 'Str',
           required  => 0,
-          default   => $self->get_tmpdir()
+          default   => ''
           },
         gatk => {
           isa       => 'Str',
           required  => 0,
-          default   => $self->get_gatk()
+          default   => '${GATK}'
           },
         java => {
           isa       => 'Str',
           required  => 0,
-          default   => $self->get_java()
+          default   => 'java'
           },
         dbsnp => {
           isa       => 'Str',
           required  => 0,
-          default   => $self->get_dbsnp()
+          default   => ''
           },
         interval => {
           isa       => 'Str',
@@ -134,10 +131,20 @@ sub call_haplotype {
         'g'
         );
 
+    # create the BAM input file string
+    my $bam_input = '';
+    foreach my $bam (@{ $args{'bam'} }) {
+      $bam_input = join(' ',
+        $bam_input,
+        '-I',
+        $bam
+        );
+      }
+
     my $output;
     if ($args{'output'} eq '') {
         $output = join('.',
-            basename($args{'bam'}, qw(.bam)),
+            basename($args{'bam'}->[0], qw(.bam)),
             'hap_snv',
             'vcf'
             );
@@ -166,7 +173,7 @@ sub call_haplotype {
     my $options = join(' ',
         '-T HaplotypeCaller',
         '-R', $args{'reference'},
-        '-I', $args{'bam'},
+        $bam_input,
         '-o', $output,
         '--dbsnp', $args{'dbsnp'},
         '--output_mode', $args{'output_mode'},

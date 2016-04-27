@@ -1,11 +1,11 @@
 #!/usr/bin/env perl
 
-### convert_mutect_to_annovar.pl ##################################################################
-# Convert the MuTect callstats.txt file to an ANNOVAR compatible input file.
+### run_gatk_haploytype.pl ########################################################################
+# Run the GATK Haplotype caller algorithm.
 
 ### HISTORY #######################################################################################
 # Version       Date            Developer           Comments
-# 0.01          2015-09-23      rdeborja            initial development
+# 0.01          2016-04-25      rdeborja            Initial development
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -13,13 +13,10 @@ use strict;
 use Carp;
 use Getopt::Long;
 use Pod::Usage;
-use ShlienLab::Pipeline::SNVPostProcessing;
 
 ### COMMAND LINE DEFAULT ARGUMENTS ################################################################
 # list of arguments and default values go here as hash key/value pairs
 our %opts = (
-    input => undef,
-    output => ''
     );
 
 ### MAIN CALLER ###################################################################################
@@ -42,8 +39,6 @@ sub main {
         \%opts,
         "help|?",
         "man",
-        "input|i=s",
-        "output|o:s"
         ) or pod2usage(64);
     
     pod2usage(1) if $opts{'help'};
@@ -56,12 +51,6 @@ sub main {
             }
         }
 
-    my $snv = ShlienLab::Pipeline::SNVPostProcessing->new();
-    my $snv_post_run = $snv->convert_mutect_to_annovar_input(
-        input => $opts{'input'},
-        output => $opts{'output'}
-        );
-
     return 0;
     }
 
@@ -71,17 +60,15 @@ __END__
 
 =head1 NAME
 
-convert_mutect_to_annovar.pl
+run_gatk_haploytype.pl
 
 =head1 SYNOPSIS
 
-B<convert_mutect_to_annovar.pl> [options] [file ...]
+B<run_gatk_haploytype.pl> [options] [file ...]
 
     Options:
     --help          brief help message
     --man           full documentation
-    --input         (required) MuTect .callstats.txt file to be converted for use with ANNOVAR
-    --output        (optional) name of output file (default: <input>.annovar)
 
 =head1 OPTIONS
 
@@ -95,22 +82,15 @@ Print a brief help message and exit.
 
 Print the manual page.
 
-
-=item B<--input>
-The MuTect .callstats.txt file to be used with the
-
-=item B<--output>
-
-
 =back
 
 =head1 DESCRIPTION
 
-B<convert_mutect_to_annovar.pl> Convert the MuTect callstats.txt file to an ANNOVAR compatible input file.
+B<run_gatk_haploytype.pl> Run the GATK Haplotype caller algorithm.
 
 =head1 EXAMPLE
 
-convert_mutect_to_annovar.pl
+run_gatk_haploytype.pl
 
 =head1 AUTHOR
 

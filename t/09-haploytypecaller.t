@@ -27,7 +27,7 @@ lives_ok
     'Class instantiated';
 
 my $haplo_run = $gatk->call_haplotype(
-    bam => $bam,
+    bam => [$bam],
     reference => $reference,
     dbsnp => 'dbsnp.vcf'
     );
@@ -37,7 +37,7 @@ my $expected_haplo_command = join(' ',
     '-jar ${GATK}',
     '-T HaplotypeCaller',
     '-R reference.fa',
-    '-I test.bam',
+    ' -I test.bam',
     '-o test.hap_snv.vcf',
     '--dbsnp dbsnp.vcf',
     '--output_mode EMIT_VARIANTS_ONLY',
