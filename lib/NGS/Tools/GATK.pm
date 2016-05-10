@@ -18,7 +18,7 @@ NGS::Tools::GATK
 
 =head1 VERSION
 
-0.09
+0.010
 
 =cut
 
