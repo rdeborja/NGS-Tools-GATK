@@ -32,12 +32,13 @@ my $target = 'target.intervals';
 my $run_indelrealign = $gatk->IndelRealigner(
 	bam => $bam,
 	reference => $reference,
-    target => $target
+    target => $target,
+    tmpdir => '/tmp'
 	);
 my $expected_command = join(' ',
 	"java -Xmx24g",
     '-Djava.io.tmpdir=/tmp',
-    '-jar ${GATK}',
+    '-jar GenomeAnalysisTK.jar',
  	'-T IndelRealigner',
     '-I test.bam',
     '-R test.fa',

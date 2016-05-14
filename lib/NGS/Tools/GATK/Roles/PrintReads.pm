@@ -62,8 +62,7 @@ sub PrintReads {
             },
         reference => {
             isa         => 'Str',
-            required    => 0,
-            default     => $self->get_reference()
+            required    => 1
             },
         output => {
             isa         => 'Str',
@@ -78,12 +77,12 @@ sub PrintReads {
         java => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_java()
+            default     => 'java'
             },
         gatk => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_gatk()
+            default     => 'GenomeAnalysisTK.jar'
             },
         memory => {
             isa         => 'Int',
@@ -93,7 +92,7 @@ sub PrintReads {
         tmpdir => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_tmpdir()
+            default     => 'tmp'
             },
         threads => {
             isa         => 'Int',

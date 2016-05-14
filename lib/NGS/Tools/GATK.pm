@@ -18,11 +18,11 @@ NGS::Tools::GATK
 
 =head1 VERSION
 
-0.010
+0.11
 
 =cut
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 =head1 SYNOPSIS
 

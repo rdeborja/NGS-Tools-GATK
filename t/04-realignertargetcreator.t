@@ -33,13 +33,14 @@ my $targetcreator = $gatk->RealignerTargetCreator(
     reference => 'ref.fa',
     memory => 24,
     threads => 24,
-    interval => 1
+    interval => 1,
+    tmpdir => '/tmp'
     );
 my $expected_command = join(' ',
     'java',
     '-Xmx24g',
     '-Djava.io.tmpdir=/tmp',
-    '-jar ${GATK}',
+    '-jar GenomeAnalysisTK.jar',
     '-T RealignerTargetCreator',
     '-I test.bam',
     '-R ref.fa',

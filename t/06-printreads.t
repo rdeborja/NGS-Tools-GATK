@@ -34,12 +34,13 @@ my $printreads = $gatk->PrintReads(
     reference => $ref,
     bqsr => $recal_table,
     threads => 4,
+    tmpdir => '/tmp'
     );
 my $expected_cmd = join(' ',
     'java',
     '-Xmx24g',
     '-Djava.io.tmpdir=/tmp',
-    '-jar ${GATK}',
+    '-jar GenomeAnalysisTK.jar',
     '-T PrintReads',
     '-I test.bam',
     '-R ref.fa',

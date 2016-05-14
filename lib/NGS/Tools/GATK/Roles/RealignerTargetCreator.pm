@@ -2,8 +2,6 @@ package NGS::Tools::GATK::Roles::RealignerTargetCreator;
 use Moose::Role;
 use MooseX::Params::Validate;
 
-with 'NGS::Tools::GATK::Roles::Core';
-
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
@@ -48,7 +46,9 @@ Generate the RealignerTargetCreator command and interval list.
 
 =item * java: full path to the Java program (default: java)
 
-=item * intervals: a list of contigs to parallelize processing (optiona, default: '')
+=item * threads: number of threads to use (optiona, default: 1)
+
+=item * interval: a list of contigs to parallelize processing (optiona, default: '')
 
 =back
 
@@ -76,9 +76,7 @@ sub RealignerTargetCreator {
       },
     reference => {
       isa       => 'Str',
-      required  => 0,
-      default   => $self->get_reference()
-      },
+      required  => 1      },
     output => {
       isa       => 'Str',
       required  => 0,
@@ -97,17 +95,17 @@ sub RealignerTargetCreator {
     tmpdir => {
       isa       => 'Str',
       required  => 0,
-      default   => $self->get_tmpdir()
+      default   => 'tmp'
       },
     gatk => {
       isa       => 'Str',
       required  => 0,
-      default   => $self->get_gatk()
+      default   => 'GenomeAnalysisTK.jar'
       },
     java => {
       isa       => 'Str',
       required  => 0,
-      default   => $self->get_java()
+      default   => 'java'
       },
     threads => {
       isa       => 'Int',

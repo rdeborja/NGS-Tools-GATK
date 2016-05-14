@@ -2,8 +2,6 @@ package NGS::Tools::GATK::Roles::IndelRealigner;
 use Moose::Role;
 use MooseX::Params::Validate;
 
-with 'NGS::Tools::GATK::Roles::Core';
-
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
@@ -82,8 +80,7 @@ sub IndelRealigner {
 			},
 		reference => {
 			isa			=> 'Str',
-			required	=> 0,
-			default		=> $self->get_reference()
+			required	=> 1
 			},
 		target => {
 			isa			=> 'Str',
@@ -97,22 +94,22 @@ sub IndelRealigner {
 		java => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> $self->get_java()
+			default		=> 'java'
 			},
 		gatk => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> $self->get_gatk()
+			default		=> 'GenomeAnalysisTK.jar'
 			},
 		known_sites => {
 			isa			=> 'ArrayRef',
 			required	=> 0,
-			default		=> $self->get_known_sites()
+			default		=> []
 			},
 		tmpdir => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> $self->get_tmpdir()
+			default		=> 'tmp'
 			}
 		);
 
