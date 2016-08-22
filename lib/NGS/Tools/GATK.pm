@@ -6,6 +6,7 @@ with 'NGS::Tools::GATK::Roles::DepthOfCoverage';
 with 'NGS::Tools::GATK::Roles::Pileup';
 with 'NGS::Tools::GATK::Roles::UnifiedGenotyper';
 with 'NGS::Tools::GATK::Roles::CombineVariants';
+with 'NGS::Tools::GATK::Roles::HaplotypeCaller';
 
 use strict;
 use warnings FATAL => 'all';
@@ -18,11 +19,11 @@ NGS::Tools::GATK
 
 =head1 VERSION
 
-0.11
+0.12
 
 =cut
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 =head1 SYNOPSIS
 
