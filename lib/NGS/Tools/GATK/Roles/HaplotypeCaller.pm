@@ -34,8 +34,6 @@ A method that wraps the GATK HaplotypeCaller.jar program.
 
 =item * output: name of output file (default: script will use modified input BAM filename)
 
-=item * known_sites: an array reference containing VCF file(s) to use for known indels
-
 =item * memory: amount of heap space to define for the Java program
 
 =item * tmpdir: full path to the tmp directory where intemediate files will be generated
@@ -47,6 +45,14 @@ A method that wraps the GATK HaplotypeCaller.jar program.
 =item * dbsnp: name of dbSNP file for annotation of mutations
 
 =item * interval: interval to use for parallelization, in our case we use the chromosome/contig
+
+=item * min_base_quality_score: filtering criteria based on minimum base quality score (default: 20)
+
+=item * stand_call_conf: minimum Phred-scaled confidence threshold variants are called (default: 30)
+
+=item * stand_emit_conf: mimimum Phred-scale conficence threshold variants are emitted (default: 30)
+
+=item * output_mode: mode which output will be set (default: EMIT_VARIANTS_ONLY)
 
 =back
 
@@ -68,11 +74,6 @@ sub call_haplotype {
           isa       => 'Str',
           required  => 0,
           default   => ''
-          },
-        known_sites => {
-          isa       => 'ArrayRef',
-          required  => 0,
-          default   => undef
           },
         memory => {
           isa       => 'Int',
@@ -246,7 +247,7 @@ L<http://search.cpan.org/dist/test-test/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2013 Richard de Borja.
+Copyright 2016 Richard de Borja.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
