@@ -38,7 +38,7 @@
    "provides" : {
       "NGS::Tools::GATK" : {
          "file" : "lib/NGS/Tools/GATK.pm",
-         "version" : "0.12"
+         "version" : "0.13"
       },
       "NGS::Tools::GATK::Roles::BaseRecalibrator" : {
          "file" : "lib/NGS/Tools/GATK/Roles/BaseRecalibrator.pm"
@@ -75,5 +75,5 @@
       }
    },
    "release_status" : "stable",
-   "version" : "0.12"
+   "version" : "0.13"
 }

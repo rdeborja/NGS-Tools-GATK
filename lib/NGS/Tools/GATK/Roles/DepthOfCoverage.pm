@@ -85,19 +85,9 @@ sub generate_depth_of_coverage {
 			}
 		);
 
-	if (! -e $args{'bam'}) {
-		croak("Invalid BAM file provided");
-		}
-	# if (! -e $args{'gatk'}) {
-	# 	croak("Invalid GATK file provided");
-	# 	}
 	if (! -e $args{'ref'}) {
 		croak("Invalid reference FASTA file provided");
 		}
-	# if (! -e $args{'java'}) {
-	# 	croak("Invalid Java prgoram provided");
-	# 	}
-
 	my $memory = join('',
 		$args{'memory'},
 		'g'
