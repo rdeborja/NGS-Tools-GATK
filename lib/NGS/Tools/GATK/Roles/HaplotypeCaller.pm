@@ -205,6 +205,88 @@ sub call_haplotype {
     return(\%return_values);
     }
 
+
+=head2 $obj->CombineGVCFs()
+
+A method to run the GATK CombineGVCFs subprogram.
+
+=head3 Arguments:
+
+=over 2
+
+=item * variant: an array reference containing GVCF files
+
+=back
+
+=cut
+
+sub CombineGVCFs {
+  my $self = shift;
+  my %args = validated_hash(
+    \@_,
+    variant => {
+      isa         => 'ArrayRef',
+      required    => 1
+      },
+
+    );
+
+  
+
+  my %return_values = (
+
+    );
+
+  return(\%return_values);
+  }
+
+=head2 $obj->GenomeVCFs()
+
+A method to run the GATK GenotypeGVCFs subprogram.  The output of this is a single
+VCF file with joint genotypes from multiple samples in a single GVCF file.
+
+=head3 Arguments:
+
+=over 2
+
+=item * gvcf: GVCF file containing multiple samples
+
+=back
+
+=cut
+
+sub GenomeVCFs {
+  my $self = shift;
+  my %args = validated_hash(
+    \@_,
+    gvcf => {
+      isa         => 'Str',
+      required    => 1
+      },
+    output => {
+      isa         => 'Str',
+      required    => 0,
+      default     => ''
+      }
+    );
+
+  my $output;
+  if ($args{'output'} eq '') {
+    $output = join('.',
+      File::Basename::basename($args{'gvcf'}, '.gvcf')
+      );
+    }
+  else {
+    $output = $args{'output'};
+    }
+
+  my %return_values = (
+
+    );
+
+  return(\%return_values);
+  }
+
 =head1 AUTHOR
 
 Richard de Borja, C<< <richard.deborja at gmail.ca> >>
