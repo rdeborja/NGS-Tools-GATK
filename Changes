@@ -26,3 +26,7 @@ Revision history for NGS-Tools-GATK
 
 0.09   2016-02-08
        Added -L argument to pass intervals to the RealignerTargetCreator method.
+
+0.13   2017-03-24
+       Changed cosmic argument for MuTect2 run_mutect2 method to blank to accomodate
+       organisms without a cosmic VCF
