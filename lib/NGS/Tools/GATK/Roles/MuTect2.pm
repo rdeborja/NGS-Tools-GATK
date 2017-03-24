@@ -38,7 +38,7 @@ A method for running mutect on a pair of tumour/normal matched samples.
 
 =item * reference: [optional] reference genome in FASTA format (default: hs37d5.fa)
 
-=item * cosmic: [required] full path to the COSMIC VCF file
+=item * cosmic: [optional] full path to the COSMIC VCF file
 
 =item * dbsnp: [required] full path to the dbSNP VCF file
 
@@ -81,7 +81,8 @@ sub run_mutect2 {
             },
         cosmic => {
             isa         => 'Str',
-            required    => 1
+            required    => 0,
+            default     => ''
             },
         dbsnp => {
             isa         => 'Str',
@@ -146,9 +147,14 @@ sub run_mutect2 {
         '-R', $args{'reference'},
         '-I:tumor', $args{'tumour'},
         '-I:normal', $args{'normal'},
-        '--cosmic', $args{'cosmic'},
         '--dbsnp', $args{'dbsnp'}
         );
+    if ($args{'cosmic'} ne '') {
+        $options = join(' ',
+            $options,
+            '--cosmic', $args{'cosmic'}
+            );
+        }
     my %mutect;
     my $cmd;
     foreach my $interval (@{ $args{'intervals'} }) {
