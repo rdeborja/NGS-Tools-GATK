@@ -46,8 +46,8 @@ my $expected_1_cmd = join(' ',
     "-R ref.fa",
     "-I:tumor tumour.bam",
     "-I:normal normal.bam",
-    "--cosmic cosmic.vcf",
     "--dbsnp dbsnp.vcf",
+    "--cosmic cosmic.vcf",
     "-L 1",
     "-o sample.1.vcf"
     );
@@ -58,9 +58,28 @@ my $expected_2_cmd = join(' ',
     "-R ref.fa",
     "-I:tumor tumour.bam",
     "-I:normal normal.bam",
-    "--cosmic cosmic.vcf",
     "--dbsnp dbsnp.vcf",
+    "--cosmic cosmic.vcf",
     "-L 2",
     "-o sample.2.vcf"
     );
 is($mutect_run->{'2'}->{'cmd'}, $expected_2_cmd, "Command 2 matches expected");
+
+my $mutect_run_2 = $mutect->run_mutect2(
+    normal => $normal,
+    tumour => $tumour,
+    sample => $sample,
+    dbsnp => $dbsnp,
+    reference => $reference,
+    intervals => ['1']    
+    );
+my $expected_3_cmd = join(' ',
+    "java -Xmx4g -Djava.io.tmpdir=./tmp -jar",
+    "GenomeAnalysisTK.jar -T MuTect2",
+    "-R ref.fa",
+    "-I:tumor tumour.bam",
+    "-I:normal normal.bam",
+    "--dbsnp dbsnp.vcf",
+    "-L 1",
+    "-o sample.2.vcf"
+    );
